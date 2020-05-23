@@ -1,16 +1,10 @@
 import React from 'react';
 import { NextPage } from 'next';
-import CountDiv from 'features/count/CountDiv';
-import Link from 'features/link/Link';
+import JsonFileInput from 'features/fileReader/JsonFileInput';
 
-const IndexPage: NextPage<{ [key in string]?: string }> = ({ ...appProps }) => (
+const IndexPage: NextPage<{ [key in string]?: string }> = () => (
   <main>
-    <p>{`Props from _app.tsx: ${JSON.stringify(appProps)}`}</p>
-    <p>{`page process env: ${process.env.NEXT_PUBLIC_TEST_PAGE_VAR}`}</p>
-    <CountDiv />
-    <Link href="/index/1">
-      <a>index/1</a>
-    </Link>
+    <JsonFileInput />
   </main>
 );
 

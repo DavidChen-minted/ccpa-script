@@ -1,8 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import count from 'features/count/countSlice';
+import scriptSnippet from 'features/snippet/scriptSnippetSlice';
 
-const rootReducer = combineReducers({
-  count,
-});
+const rootReducer = combineReducers({ scriptSnippet });
 
 export default rootReducer;
