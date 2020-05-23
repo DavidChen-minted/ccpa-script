@@ -1,0 +1,4 @@
+snippets:
+  set_email_var:
+    snippet: |
+      set @email={{email}};
