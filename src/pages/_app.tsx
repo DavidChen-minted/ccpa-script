@@ -2,6 +2,8 @@ import React from 'react';
 import { NextComponentType } from 'next';
 import { AppContext, AppProps } from 'next/app';
 import { Provider } from 'react-redux';
+import { Global } from '@emotion/core';
+import { globalButtonReset } from 'utils/style/buttonReset';
 import withRedux from 'utils/redux/withRedux';
 import makeStore from 'stores';
 
@@ -23,6 +25,7 @@ const myApp: NextComponentType<
 > = ({ Component, pageProps, appProps, store }) => {
   return (
     <Provider store={store}>
+      <Global styles={globalButtonReset} />
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Component {...appProps} {...pageProps} />
     </Provider>
@@ -30,7 +33,7 @@ const myApp: NextComponentType<
 };
 
 myApp.getInitialProps = async () => {
-  return { appProps: { appInitialProcessEnv: process.env.TEST_APP_PROP } };
+  return { appProps: {} };
 };
 
 export default withRedux({ makeStore })(myApp);

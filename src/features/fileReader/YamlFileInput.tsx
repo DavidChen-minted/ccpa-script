@@ -1,4 +1,5 @@
 import React, { FC, ChangeEvent } from 'react';
+import { css } from '@emotion/core';
 import { safeLoad } from 'js-yaml';
 import readAsText from 'utils/common/readAsText';
 
@@ -6,8 +7,24 @@ export interface Props {
   callbackOnLoad?: (data: any) => void;
 }
 
+export const fileButtonStyles = css`
+  border: 1px solid black;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: gray;
+    color: gray;
+  }
+
+  & > input[type='file'] {
+    display: none;
+  }
+`;
+
 const YamlFileInput: FC<Props> = ({ callbackOnLoad }) => {
-  const handleFileClick = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) {
       return;
     }
@@ -27,7 +44,10 @@ const YamlFileInput: FC<Props> = ({ callbackOnLoad }) => {
 
   return (
     <div>
-      <input type="file" id="input-yaml-file" onChange={handleFileClick} />
+      <label htmlFor="input-yaml-file" css={fileButtonStyles}>
+        <input type="file" id="input-yaml-file" onChange={handleFileSelect} />
+        upload yaml file
+      </label>
     </div>
   );
 };
