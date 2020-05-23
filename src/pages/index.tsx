@@ -1,10 +1,10 @@
 import React from 'react';
 import { NextPage } from 'next';
-import JsonFileInput from 'features/fileReader/JsonFileInput';
+import YamlFileInput from 'features/fileReader/YamlFileInput';
 
 const IndexPage: NextPage<{ [key in string]?: string }> = () => (
   <main>
-    <JsonFileInput />
+    <YamlFileInput callbackOnLoad={console.log} />
   </main>
 );
 
