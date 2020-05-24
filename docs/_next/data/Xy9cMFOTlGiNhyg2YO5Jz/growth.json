@@ -1,1 +1,0 @@
-{"initialProps":{"appProps":{}},"initialState":{"scriptSnippet":{"ids":[],"entities":{}}},"__N_SSG":true,"pageProps":{"yamlData":{"snippets":{"set_email_var":{"snippet":"set @email={{email}};\n"}}}}}
