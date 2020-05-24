@@ -1,4 +1,82 @@
+
+steps:
+  - id: begin
+    begin: true
+    check:
+      dbs:
+        - db: drupal
+          sections:
+            - snippets:
+              - set_email_var
+    delete:
+      dbs:
+        - db: drupal
+          sections:
+          - snippets:
+            - set_request_number
+            - set_user_id
+            - compose_email_placeholder
+            - compose_text_placeholder
+  - id: email
+    check:
+      description: >
+        check if the email is in users table in bidata DB
+      dbs:
+        - db: drupal
+          sections:
+          - snippets:
+            - find_user_id
+            - show_user_id
+    delete:
+      description: >
+        create sql to "delete" in users table
+      dbs:
+        - db: drupal
+          sections:
+          - snippets:
+            - update_placeholder_in_users
+vars:
+  - id: email
+    description: >
+      email address from OneTrust
+  - id: requestNumber
+    description: >
+      request number from OneTrust
+  - id: userId
+    description: >
+      user id from the main drupal database
+  - id: emailPlaceholder
+    description: >
+      placeholder to replace email reference
+  - id: textPlaceholder
+    description: >
+      placeholder to replace text reference
+db:
+  - drupal
+  - sessions
+  - di
+  - jobs
+  - di_jobs
 snippets:
-  set_email_var:
-    snippet: |
-      set @email={{email}};
+  set_email_var: |
+    set @email = {{email}};
+  find_user_id: |
+    select uid into @UID from users where mail = @email;
+  show_user_id: |
+    select @UID;
+  set_request_number: |
+    set @requestnumber = {{requestNumber}};
+  set_user_id: |
+    set @UID = {{userId}};
+  compose_email_placeholder: |
+    select concat("deleted-onetrust-req-", @requestnumber, "@privacy.mntd.net") into @emailplaceholder;
+  compose_text_placeholder: |
+    select concat("Deleted per onetrust", @requestnumber) into @textplaceholder;
+  update_placeholder_in_users: |
+    update users
+    set
+    name = @textplaceholder,
+    init = @textplaceholder,
+    mail = @emailplaceholder,
+    pass = textplaceholder,
+    where uid = @UID;
