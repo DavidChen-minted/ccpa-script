@@ -1,4 +1,3 @@
-
 steps:
   - id: begin
     begin: true
@@ -35,28 +34,29 @@ steps:
           sections:
           - snippets:
             - update_placeholder_in_users
-vars:
-  - id: email
-    description: >
-      email address from OneTrust
-  - id: requestNumber
-    description: >
-      request number from OneTrust
-  - id: userId
-    description: >
-      user id from the main drupal database
-  - id: emailPlaceholder
-    description: >
-      placeholder to replace email reference
-  - id: textPlaceholder
-    description: >
-      placeholder to replace text reference
 db:
   - drupal
   - sessions
   - di
   - jobs
   - di_jobs
+vars:
+  email:
+    description: >
+      email address from OneTrust
+  requestNumber:
+    description: >
+      request number from OneTrust
+  userId:
+    description: >
+      user id from the main drupal database
+  emailPlaceholder:
+    description: >
+      placeholder to replace email reference
+  textPlaceholder:
+    description: >
+      placeholder to replace text reference
+
 snippets:
   set_email_var: |
     set @email = {{email}};

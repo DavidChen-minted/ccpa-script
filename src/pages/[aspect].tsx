@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, parse } from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import { safeLoad } from 'js-yaml';
+import useImportSnippets from 'features/snippet/useImportSnippet';
 
 export interface Props {
   yamlData?: any;
@@ -13,11 +14,18 @@ export interface Params extends ParsedUrlQuery {
   aspect: string;
 }
 
-const AspectPage: NextPage<Props> = ({ yamlData }) => (
-  <main>
-    <p>{JSON.stringify(yamlData)}</p>
-  </main>
-);
+const AspectPage: NextPage<Props> = ({ yamlData }) => {
+  useEffect(() => {
+    console.log(yamlData);
+  }, [yamlData]);
+
+  useImportSnippets(yamlData.snippets);
+  return (
+    <main>
+      <p>{JSON.stringify(!!yamlData)}</p>
+    </main>
+  );
+};
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const yamlDirectory = join(process.cwd(), 'yaml');
