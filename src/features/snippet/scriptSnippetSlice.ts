@@ -1,13 +1,13 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import sciptSnippetAdapter, { ScriptSnippet } from './sciptSnippetEntity';
+import scriptSnippetAdapter, { ScriptSnippet } from './sciptSnippetEntity';
 
 const scriptSnippetSlice = createSlice({
   name: 'scriptSnippet',
-  initialState: sciptSnippetAdapter.getInitialState(),
+  initialState: scriptSnippetAdapter.getInitialState(),
   reducers: {
     scriptSnippetReceived: (state, action: PayloadAction<ScriptSnippet[]>) => {
-      sciptSnippetAdapter.setAll(state, action.payload);
+      scriptSnippetAdapter.setAll(state, action.payload);
     },
   },
 });
@@ -18,7 +18,7 @@ export type ScriptSnippetState = ReturnType<
   typeof scriptSnippetSlice['reducer']
 >;
 
-export interface GlobalscriptSnippetState {
+export interface GlobalScriptSnippetState {
   scriptSnippet: ScriptSnippetState;
 }
 
