@@ -5,6 +5,7 @@ import { join, parse } from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import { safeLoad } from 'js-yaml';
 import useImportSnippets from 'features/snippet/useImportSnippet';
+import useImportVariables from 'features/variable/useImportVariables';
 
 export interface Props {
   yamlData?: any;
@@ -18,6 +19,8 @@ const AspectPage: NextPage<Props> = ({ yamlData }) => {
   useEffect(() => {
     console.log(yamlData);
   }, [yamlData]);
+
+  useImportVariables(yamlData.vars);
 
   useImportSnippets(yamlData.snippets);
   return (
