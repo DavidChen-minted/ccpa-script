@@ -2,6 +2,7 @@ import React, { FC, ChangeEvent } from 'react';
 import { css } from '@emotion/core';
 import { safeLoad } from 'js-yaml';
 import readAsText from 'utils/common/readAsText';
+import rem from 'utils/style/rem';
 
 export interface Props {
   callbackOnLoad?: (data: any) => void;
@@ -12,6 +13,7 @@ export const fileButtonStyles = css`
   display: inline-block;
   padding: 6px 12px;
   cursor: pointer;
+  margin: ${rem(20)} ${rem(20)};
 
   &:hover {
     border-color: gray;
