@@ -1,4 +1,4 @@
-import { createEntityAdapter } from '@reduxjs/toolkit';
+import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 
 export interface Choice {
   id: string;
@@ -15,6 +15,8 @@ export interface ChoiceControl {
   choices: Choices;
   selectedChoice?: Choice | null;
 }
+
+export type ChoiceControlEntityState = EntityState<ChoiceControl>;
 
 export const instanceOfChoice = (object: any): object is Choice => {
   if (typeof object?.id !== 'string') {

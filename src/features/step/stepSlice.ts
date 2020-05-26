@@ -1,17 +1,20 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction, EntityState } from '@reduxjs/toolkit';
-import stepAdapter, { Step } from './stepEntity';
-import choiceControlAdapter, { ChoiceControl } from './choiceControlEntity';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import stepAdapter, { Step, StepEntityState } from './stepEntity';
+import choiceControlAdapter, {
+  ChoiceControl,
+  ChoiceControlEntityState,
+} from './choiceControlEntity';
+import getNextVisibleStepId from './getNextVisibleStep';
 
 export interface StepsState {
-  [key: string]: EntityState<Step>;
+  [key: string]: StepEntityState;
 }
-
-export type ChoiceControlState = EntityState<ChoiceControl>;
 
 export interface StepState {
   steps: StepsState;
-  choiceControl: ChoiceControlState;
+  choiceControl: ChoiceControlEntityState;
+  currentStepId?: string;
 }
 
 export interface ParsedSteps {
@@ -48,9 +51,12 @@ const stepSlice = createSlice({
         },
         {}
       );
+      state.currentStepId = getNextVisibleStepId(
+        state.steps[action.payload.types[0]]
+      );
       return state;
     },
-    choiceControlReceived: (
+    importChoiceControl: (
       state,
       action: PayloadAction<ChoiceControl[] | undefined>
     ) => {
@@ -65,4 +71,4 @@ export interface GlobalStepState {
   step: StepState;
 }
 
-export const { importParsedSteps, choiceControlReceived } = stepSlice.actions;
+export const { importParsedSteps, importChoiceControl } = stepSlice.actions;

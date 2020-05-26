@@ -18,7 +18,7 @@ import {
 } from 'features/scriptSnippet/scriptSnippetSlice';
 import {
   importParsedSteps,
-  choiceControlReceived,
+  importChoiceControl,
 } from 'features/step/stepSlice';
 import parseStepsToImport, { StepsToImport } from './parseStepsToImport';
 
@@ -50,7 +50,7 @@ const useImportData = (dataToImport?: DataToImport) => {
         types: scriptTypes,
       }) || {};
     dispatch(importParsedSteps({ steps: parsedSteps, types: scriptTypes }));
-    dispatch(choiceControlReceived(choiceControl));
+    dispatch(importChoiceControl(choiceControl));
   }, [dataToImport]);
 };
 

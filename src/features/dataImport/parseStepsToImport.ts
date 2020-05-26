@@ -82,7 +82,7 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
     parsedSteps[scriptType] = parsedSteps[scriptType] || [];
     const isFirst = scriptIndex === 0;
     steps.forEach(({ id, visible: visibleInput, ...stepsByType }, index) => {
-      const visible = !!(visibleInput === false);
+      const visible = !(visibleInput === false);
       const stepToImport = stepsByType[scriptType];
       if (!instanceOfStepToImport(stepToImport)) {
         return;

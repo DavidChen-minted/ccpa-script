@@ -1,4 +1,4 @@
-import { createEntityAdapter } from '@reduxjs/toolkit';
+import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 
 export interface Dependency {
   id: string;
@@ -20,6 +20,8 @@ export interface Step {
   visible: boolean;
   dependency?: Dependency;
 }
+
+export type StepEntityState = EntityState<Step>;
 
 export const instanceOfDependency = (object: any): object is Dependency => {
   if (typeof object?.id !== 'string') {
