@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, parse } from 'path';
@@ -7,7 +7,7 @@ import { safeLoad } from 'js-yaml';
 import useImportData from 'features/dataImport/useImportData';
 import MainWindow from 'features/mainWindow/MainWindow';
 import pageTitleStyles from 'styles/pageTitleStyles';
-import capitalizeFirstLetter from 'utils/common/CapitalizeFirstLetter';
+import capitalizeFirstLetter from 'utils/common/capitalizeFirstLetter';
 
 export interface Props {
   yamlData?: any;
@@ -19,10 +19,6 @@ export interface Params extends ParsedUrlQuery {
 }
 
 const AspectPage: NextPage<Props> = ({ yamlData, aspect }) => {
-  // useEffect(() => {
-  //   console.log(yamlData);
-  // }, [yamlData]);
-
   useImportData(yamlData);
 
   return (
