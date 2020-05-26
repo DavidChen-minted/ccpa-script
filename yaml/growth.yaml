@@ -1,39 +1,38 @@
 steps:
   - id: begin
-    begin: true
+    visible: false
     check:
-      dbs:
-        - db: drupal
-          sections:
-            - snippets:
-              - set_email_var
+      script:
+        db: drupal
+        snippets:
+            - set_email_var
     delete:
-      dbs:
-        - db: drupal
-          sections:
-          - snippets:
-            - set_request_number
-            - set_user_id
-            - compose_email_placeholder
-            - compose_text_placeholder
+      script:
+        db: drupal
+        snippets:
+          - set_request_number
+          - set_user_id
+          - compose_email_placeholder
+          - compose_text_placeholder
   - id: email
     check:
       description: >
         check if the email is in users table in bidata DB
-      dbs:
-        - db: drupal
-          sections:
-          - snippets:
-            - find_user_id
-            - show_user_id
+      choices:
+        - yes
+        - no
+      script:
+        db: drupal
+        snippets:
+          - find_user_id
+          - show_user_id
     delete:
       description: >
         create sql to "delete" in users table
-      dbs:
-        - db: drupal
-          sections:
-          - snippets:
-            - update_placeholder_in_users
+      script:
+        db: drupal
+        snippets:
+          - update_placeholder_in_users
 types:
   - check
   - delete

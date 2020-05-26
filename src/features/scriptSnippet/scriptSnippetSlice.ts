@@ -13,7 +13,7 @@ const scriptSnippetSlice = createSlice({
     scriptSnippetReceived: (state, action: PayloadAction<ScriptSnippet[]>) => {
       scriptSnippetAdapter.setAll(state, action.payload);
     },
-    importScriptSnippet: (
+    importScriptSnippets: (
       state,
       action: PayloadAction<ScriptSnippetsToImport | undefined>
     ) => {
@@ -44,5 +44,5 @@ export interface GlobalScriptSnippetState {
 
 export const {
   scriptSnippetReceived,
-  importScriptSnippet,
+  importScriptSnippets,
 } = scriptSnippetSlice.actions;

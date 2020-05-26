@@ -1,21 +1,19 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type ScriptTypes = string[];
+export type ScriptTypeState = string[];
 
 const scriptTypeSlice = createSlice({
   name: 'scriptType',
-  initialState: [] as ScriptTypes,
+  initialState: [] as ScriptTypeState,
   reducers: {
-    scriptTypeReceived: (_, action: PayloadAction<ScriptTypes>) => {
+    scriptTypeReceived: (_, action: PayloadAction<ScriptTypeState>) => {
       return action.payload;
     },
   },
 });
 
 export default scriptTypeSlice.reducer;
-
-export type ScriptTypeState = ReturnType<typeof scriptTypeSlice['reducer']>;
 
 export interface GlobalScriptTypeState {
   scriptType: ScriptTypeState;
