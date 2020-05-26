@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
+import { Dependency, instanceOfDependency } from 'features/step/stepEntity';
 import {
   Choice,
   Choices,
-  Dependency,
-  instanceOfDependency,
   instanceOfChoice,
-} from 'features/step/stepEntity';
+  ChoiceControlState,
+} from 'features/choiceControl/choiceControlSlice';
 import { ParsedSteps } from 'features/step/stepSlice';
 
 export interface StepToImport {
@@ -72,14 +72,12 @@ const instanceOfStepToImport = (object: any): object is StepToImport => {
   return true;
 };
 
-const parseStepsToImport = ({
-  types,
-  steps,
-}: ParseStepsToImportArgs): null | ParsedSteps => {
+const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
   if (!(steps && Array.isArray(steps) && types && Array.isArray(types))) {
     return null;
   }
   const parsedSteps: ParsedSteps = {};
+  const choiceControl: ChoiceControlState = {};
   types.forEach((scriptType, scriptIndex) => {
     parsedSteps[scriptType] = parsedSteps[scriptType] || [];
     const isFirst = scriptIndex === 0;
@@ -89,8 +87,8 @@ const parseStepsToImport = ({
       if (!instanceOfStepToImport(stepToImport)) {
         return;
       }
-      let choices: Choices | undefined;
       if (isFirst && !visible) {
+        let choices: Choices | undefined;
         if (stepToImport.choices && Array.isArray(stepToImport.choices)) {
           choices = stepToImport.choices.reduce<Choices>((obj, choice) => {
             if (typeof choice === 'string') {
@@ -106,6 +104,7 @@ const parseStepsToImport = ({
             no: { id: 'no' },
           };
         }
+        choiceControl[id] = { choices };
       }
       parsedSteps[scriptType].push({
         id,
@@ -115,11 +114,10 @@ const parseStepsToImport = ({
         description: stepToImport.description,
         script: stepToImport.script,
         dependency: stepToImport.dependency,
-        choices,
       });
     });
   });
-  return parsedSteps;
+  return { parsedSteps, choiceControl };
 };
 
 export default parseStepsToImport;

@@ -17,6 +17,7 @@ import {
   ScriptSnippetsToImport,
 } from 'features/scriptSnippet/scriptSnippetSlice';
 import { importParsedSteps } from 'features/step/stepSlice';
+import { choiceControlReceived } from 'features/choiceControl/choiceControlSlice';
 import parseStepsToImport, { StepsToImport } from './parseStepsToImport';
 
 interface DataToImport {
@@ -41,11 +42,13 @@ const useImportData = (dataToImport?: DataToImport) => {
     dispatch(scriptDatabaseReceived(scriptDatabase));
     dispatch(importVariables(dataToImport?.vars));
     dispatch(importScriptSnippets(dataToImport?.snippets));
-    const parsedSteps = parseStepsToImport({
-      steps: dataToImport?.steps,
-      types: scriptTypes,
-    });
+    const { parsedSteps, choiceControl } =
+      parseStepsToImport({
+        steps: dataToImport?.steps,
+        types: scriptTypes,
+      }) || {};
     dispatch(importParsedSteps({ steps: parsedSteps, types: scriptTypes }));
+    dispatch(choiceControlReceived(choiceControl));
   }, [dataToImport]);
 };
 
