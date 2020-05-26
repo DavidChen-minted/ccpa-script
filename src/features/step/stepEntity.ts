@@ -27,7 +27,7 @@ export interface Step {
   scriptType: string;
   order: number;
   script: Script;
-  visible?: boolean;
+  visible: boolean;
   dependency?: Dependency;
   choices?: Choices;
 }
@@ -58,10 +58,9 @@ export const instanceOfChoice = (object: any): object is Choice => {
   return true;
 };
 
-const stepAdapterFactory = () =>
-  createEntityAdapter<Step>({
-    selectId: (step) => step.id,
-    sortComparer: (a, b) => a.order - b.order,
-  });
+const stepAdapter = createEntityAdapter<Step>({
+  selectId: (step) => step.id,
+  sortComparer: (a, b) => a.order - b.order,
+});
 
-export default stepAdapterFactory;
+export default stepAdapter;

@@ -1,13 +1,13 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction, EntityState } from '@reduxjs/toolkit';
-import stepAdapterFactory, {
+import stepAdapter, {
   Step,
   Choice,
   Choices,
   Dependency,
   instanceOfDependency,
   instanceOfChoice,
-} from './stepEntityFactory';
+} from './stepEntity';
 
 export interface StepToImport {
   description?: string;
@@ -97,13 +97,14 @@ const stepSlice = createSlice({
         parsedSteps[scriptType] = parsedSteps[scriptType] || [];
         const isFirst = scriptIndex === 0;
         action.payload.steps!.forEach(
-          ({ id, visible, ...stepsByType }, index) => {
+          ({ id, visible: visibleInput, ...stepsByType }, index) => {
+            const visible = !!(visibleInput === false);
             const stepToImport = stepsByType[scriptType];
             if (!instanceOfStepToImport(stepToImport)) {
               return;
             }
             let choices: Choices | undefined;
-            if (isFirst) {
+            if (isFirst && !visible) {
               if (stepToImport.choices && Array.isArray(stepToImport.choices)) {
                 choices = stepToImport.choices.reduce<Choices>(
                   (obj, choice) => {
@@ -138,9 +139,8 @@ const stepSlice = createSlice({
       });
       const newState = action.payload.types.reduce<StepState>(
         (obj, scriptType) => {
-          const adapter = stepAdapterFactory();
-          obj[scriptType] = adapter.setAll(
-            adapter.getInitialState(),
+          obj[scriptType] = stepAdapter.setAll(
+            stepAdapter.getInitialState(),
             parsedSteps[scriptType]
           );
           return obj;
