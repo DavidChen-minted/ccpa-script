@@ -16,7 +16,8 @@ import {
   importScriptSnippets,
   ScriptSnippetsToImport,
 } from 'features/scriptSnippet/scriptSnippetSlice';
-import { importSteps, StepsToImport } from 'features/step/stepSlice';
+import { importParsedSteps } from 'features/step/stepSlice';
+import parseStepsToImport, { StepsToImport } from './parseStepsToImport';
 
 interface DataToImport {
   vars?: VariablesToImport;
@@ -40,7 +41,11 @@ const useImportData = (dataToImport?: DataToImport) => {
     dispatch(scriptDatabaseReceived(scriptDatabase));
     dispatch(importVariables(dataToImport?.vars));
     dispatch(importScriptSnippets(dataToImport?.snippets));
-    dispatch(importSteps({ steps: dataToImport?.steps, types: scriptTypes }));
+    const parsedSteps = parseStepsToImport({
+      steps: dataToImport?.steps,
+      types: scriptTypes,
+    });
+    dispatch(importParsedSteps({ steps: parsedSteps, types: scriptTypes }));
   }, [dataToImport]);
 };
 
