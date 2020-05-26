@@ -5,6 +5,7 @@ import { join, parse } from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import { safeLoad } from 'js-yaml';
 import useImportData from 'features/dataImport/useImportData';
+import MainWindow from 'features/mainWindow/MainWindow';
 
 export interface Props {
   yamlData?: any;
@@ -23,7 +24,7 @@ const AspectPage: NextPage<Props> = ({ yamlData }) => {
 
   return (
     <main>
-      <p>{JSON.stringify(!!yamlData)}</p>
+      <MainWindow />
     </main>
   );
 };
