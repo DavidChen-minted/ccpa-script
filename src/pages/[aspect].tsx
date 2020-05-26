@@ -6,24 +6,30 @@ import { ParsedUrlQuery } from 'querystring';
 import { safeLoad } from 'js-yaml';
 import useImportData from 'features/dataImport/useImportData';
 import MainWindow from 'features/mainWindow/MainWindow';
+import pageTitleStyles from 'styles/pageTitleStyles';
+import capitalizeFirstLetter from 'utils/common/CapitalizeFirstLetter';
 
 export interface Props {
   yamlData?: any;
+  aspect: string;
 }
 
 export interface Params extends ParsedUrlQuery {
   aspect: string;
 }
 
-const AspectPage: NextPage<Props> = ({ yamlData }) => {
-  useEffect(() => {
-    console.log(yamlData);
-  }, [yamlData]);
+const AspectPage: NextPage<Props> = ({ yamlData, aspect }) => {
+  // useEffect(() => {
+  //   console.log(yamlData);
+  // }, [yamlData]);
 
   useImportData(yamlData);
 
   return (
     <main>
+      <h1 css={pageTitleStyles}>
+        {`${capitalizeFirstLetter(aspect)} CCPA Script`}
+      </h1>
       <MainWindow />
     </main>
   );
@@ -41,11 +47,11 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
 export const getStaticProps: GetStaticProps<Props, Params> = async ({
   params,
 }) => {
-  const result = { props: { yamlData: {} } };
+  const result = { props: { yamlData: {}, aspect: params?.aspect ?? '' } };
   const yamlFilePath = join(
     process.cwd(),
     'yaml',
-    `${params?.aspect ?? ''}.yaml`
+    `${result.props.aspect}.yaml`
   );
   if (!existsSync(yamlFilePath)) {
     return result;

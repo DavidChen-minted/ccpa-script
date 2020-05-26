@@ -1,10 +1,12 @@
 import React from 'react';
 import { NextPage } from 'next';
-import YamlFileInput from 'features/fileReader/YamlFileInput';
+import YamlParser from 'features/fileReader/YamlParser';
+import pageTitleStyles from 'styles/pageTitleStyles';
 
 const IndexPage: NextPage<{ [key in string]?: string }> = () => (
   <main>
-    <YamlFileInput callbackOnLoad={console.log} />
+    <h1 css={pageTitleStyles}>CCPA Script</h1>
+    <YamlParser />
   </main>
 );
 

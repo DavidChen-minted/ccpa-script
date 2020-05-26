@@ -46,7 +46,7 @@ const YamlFileInput: FC<Props> = ({ callbackOnLoad }) => {
     <div>
       <label htmlFor="input-yaml-file" css={fileButtonStyles}>
         <input type="file" id="input-yaml-file" onChange={handleFileSelect} />
-        upload yaml file
+        import yaml file
       </label>
     </div>
   );
