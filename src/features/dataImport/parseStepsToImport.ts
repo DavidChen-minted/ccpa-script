@@ -3,9 +3,9 @@ import { Dependency, instanceOfDependency } from 'features/step/stepEntity';
 import {
   Choice,
   Choices,
+  ChoiceControl,
   instanceOfChoice,
-  ChoiceControlState,
-} from 'features/choiceControl/choiceControlSlice';
+} from 'features/step/choiceControlEntity';
 import { ParsedSteps } from 'features/step/stepSlice';
 
 export interface StepToImport {
@@ -77,7 +77,7 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
     return null;
   }
   const parsedSteps: ParsedSteps = {};
-  const choiceControl: ChoiceControlState = {};
+  const choiceControl: ChoiceControl[] = [];
   types.forEach((scriptType, scriptIndex) => {
     parsedSteps[scriptType] = parsedSteps[scriptType] || [];
     const isFirst = scriptIndex === 0;
@@ -104,7 +104,7 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
             no: { id: 'no' },
           };
         }
-        choiceControl[id] = { choices };
+        choiceControl.push({ id, choices });
       }
       parsedSteps[scriptType].push({
         id,

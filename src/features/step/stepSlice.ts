@@ -1,9 +1,17 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction, EntityState } from '@reduxjs/toolkit';
 import stepAdapter, { Step } from './stepEntity';
+import choiceControlAdapter, { ChoiceControl } from './choiceControlEntity';
+
+export interface StepsState {
+  [key: string]: EntityState<Step>;
+}
+
+export type ChoiceControlState = EntityState<ChoiceControl>;
 
 export interface StepState {
-  [key: string]: EntityState<Step>;
+  steps: StepsState;
+  choiceControl: ChoiceControlState;
 }
 
 export interface ParsedSteps {
@@ -17,7 +25,10 @@ export interface ImportParsedStepsPayload {
 
 const stepSlice = createSlice({
   name: 'step',
-  initialState: {} as StepState,
+  initialState: {
+    steps: {},
+    choiceControl: choiceControlAdapter.getInitialState(),
+  } as StepState,
   reducers: {
     importParsedSteps: (
       state,
@@ -27,13 +38,23 @@ const stepSlice = createSlice({
         return state;
       }
       const { steps } = action.payload;
-      return action.payload.types.reduce<StepState>((obj, scriptType) => {
-        obj[scriptType] = stepAdapter.setAll(
-          stepAdapter.getInitialState(),
-          steps[scriptType]
-        );
-        return obj;
-      }, {});
+      state.steps = action.payload.types.reduce<StepsState>(
+        (obj, scriptType) => {
+          obj[scriptType] = stepAdapter.setAll(
+            stepAdapter.getInitialState(),
+            steps[scriptType]
+          );
+          return obj;
+        },
+        {}
+      );
+      return state;
+    },
+    choiceControlReceived: (
+      state,
+      action: PayloadAction<ChoiceControl[] | undefined>
+    ) => {
+      choiceControlAdapter.setAll(state.choiceControl, action.payload || []);
     },
   },
 });
@@ -44,4 +65,4 @@ export interface GlobalStepState {
   step: StepState;
 }
 
-export const { importParsedSteps } = stepSlice.actions;
+export const { importParsedSteps, choiceControlReceived } = stepSlice.actions;
