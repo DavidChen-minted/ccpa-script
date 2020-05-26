@@ -4,8 +4,7 @@ import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, parse } from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import { safeLoad } from 'js-yaml';
-import useImportSnippets from 'features/snippet/useImportSnippet';
-import useImportVariables from 'features/variable/useImportVariables';
+import useImportData from 'features/dataImport/useImportData';
 
 export interface Props {
   yamlData?: any;
@@ -20,9 +19,8 @@ const AspectPage: NextPage<Props> = ({ yamlData }) => {
     console.log(yamlData);
   }, [yamlData]);
 
-  useImportVariables(yamlData.vars);
+  useImportData(yamlData);
 
-  useImportSnippets(yamlData.snippets);
   return (
     <main>
       <p>{JSON.stringify(!!yamlData)}</p>

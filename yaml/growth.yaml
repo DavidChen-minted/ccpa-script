@@ -34,6 +34,9 @@ steps:
           sections:
           - snippets:
             - update_placeholder_in_users
+types:
+  - check
+  - delete
 db:
   - drupal
   - sessions
@@ -56,7 +59,6 @@ vars:
   textPlaceholder:
     description: >
       placeholder to replace text reference
-
 snippets:
   set_email_var: |
     set @email = {{email}};
