@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { css } from '@emotion/core';
 import ContentTable from 'features/contentTable/ContentTable';
-import ScriptDisplay from 'features/scriptDisplay/ScriptDisplay';
 import ScriptResult from 'features/scriptResult/ScriptResult';
 import rem from 'utils/style/rem';
 import useScreenHeight from 'utils/customHook/useScreenHeight';
+import MiddlePanel from 'features/middlePanel/MiddlePanel';
 
-const mainWindowStyles = (height = 0, marginBottom = 20) => css`
+const mainPanelStyles = (height = 0, marginBottom = 20) => css`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -15,16 +15,16 @@ const mainWindowStyles = (height = 0, marginBottom = 20) => css`
   margin: ${rem(20)} 0 ${rem(marginBottom)};
 `;
 
-const MainWindow: FC = () => {
+const MainPanel: FC = () => {
   const { height, measureRef } = useScreenHeight();
 
   return (
-    <div css={mainWindowStyles(height)} ref={measureRef}>
+    <div css={mainPanelStyles(height)} ref={measureRef}>
       <ContentTable />
-      <ScriptDisplay />
+      <MiddlePanel />
       <ScriptResult />
     </div>
   );
 };
 
-export default MainWindow;
+export default MainPanel;

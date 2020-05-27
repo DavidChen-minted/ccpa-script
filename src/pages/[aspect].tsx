@@ -5,7 +5,7 @@ import { join, parse } from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import { safeLoad } from 'js-yaml';
 import useImportData from 'features/dataImport/useImportData';
-import MainWindow from 'features/mainWindow/MainWindow';
+import MainPanel from 'features/mainPanel/MainPanel';
 import pageTitleStyles from 'styles/pageTitleStyles';
 import capitalizeFirstLetter from 'utils/common/capitalizeFirstLetter';
 
@@ -26,7 +26,7 @@ const AspectPage: NextPage<Props> = ({ yamlData, aspect }) => {
       <h1 css={pageTitleStyles}>
         {`${capitalizeFirstLetter(aspect)} CCPA Script`}
       </h1>
-      <MainWindow />
+      <MainPanel />
     </main>
   );
 };

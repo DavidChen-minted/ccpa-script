@@ -68,6 +68,18 @@ const stepSlice = createSlice({
       }
       return state;
     },
+    updateSelectedChoiceId: (
+      state,
+      action: PayloadAction<{
+        stepId: string;
+        choiceId: ChoiceControl['selectedChoiceId'];
+      }>
+    ) => {
+      choiceControlAdapter.updateOne(state.choiceControl, {
+        id: action.payload.stepId,
+        changes: { selectedChoiceId: action.payload.choiceId },
+      });
+    },
   },
 });
 
@@ -81,4 +93,5 @@ export const {
   importParsedSteps,
   importChoiceControl,
   changeCurrentStepId,
+  updateSelectedChoiceId,
 } = stepSlice.actions;

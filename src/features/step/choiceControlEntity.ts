@@ -13,7 +13,7 @@ export interface Choices {
 export interface ChoiceControl {
   id: string;
   choices: Choices;
-  selectedChoice?: Choice | null;
+  selectedChoiceId?: string | null;
 }
 
 export type ChoiceControlEntityState = EntityState<ChoiceControl>;

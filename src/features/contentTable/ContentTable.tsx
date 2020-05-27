@@ -1,15 +1,16 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
 import sectionTitleStyles from 'styles/sectionTitleStyles';
 import BreakLine from 'styles/BreakLine';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import stepAdapter from 'features/step/stepEntity';
 import {
   selectCheckScriptStep,
   selectCurrentStepId,
 } from 'features/step/selector';
 import useScreenHeight from 'utils/customHook/useScreenHeight';
+import { changeCurrentStepId } from 'features/step/stepSlice';
 import ContentTableItem from './ContentTableItem';
 
 const contentTableStyles = css`
@@ -40,6 +41,14 @@ const ContentTable: FC = () => {
   const currentStepId = useSelector(selectCurrentStepId);
 
   const { height, measureRef } = useScreenHeight();
+
+  const dispatch = useDispatch();
+  const handleClick = useCallback(
+    (id: string) => {
+      dispatch(changeCurrentStepId(id));
+    },
+    [dispatch, changeCurrentStepId]
+  );
   return (
     <div css={contentTableStyles}>
       <h3 css={sectionTitleStyles}>content table</h3>
@@ -53,6 +62,7 @@ const ContentTable: FC = () => {
               visible={visible}
               order={order}
               selected={id === currentStepId}
+              onClick={handleClick}
             />
           );
         })}

@@ -87,7 +87,7 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
       if (!instanceOfStepToImport(stepToImport)) {
         return;
       }
-      if (isFirst && !visible) {
+      if (isFirst && !!visible) {
         let choices: Choices | undefined;
         if (stepToImport.choices && Array.isArray(stepToImport.choices)) {
           choices = stepToImport.choices.reduce<Choices>((obj, choice) => {

@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import React, { FC, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   selectCurrentStepId,
   selectCheckScriptStep,
@@ -12,6 +12,7 @@ import {
 import getStepLabel from 'features/step/getStepLabel';
 import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
+import { changeCurrentStepId } from 'features/step/stepSlice';
 import NavigationTabItem from './NavigationTabItem';
 
 const arrows = ['\u25B2 ', '', '\u25BC '];
@@ -41,6 +42,14 @@ const NavigationTab: FC = () => {
     startId: currentStepId,
   });
 
+  const dispatch = useDispatch();
+  const handleClick = useCallback(
+    (id: string) => {
+      dispatch(changeCurrentStepId(id));
+    },
+    [dispatch, changeCurrentStepId]
+  );
+
   return (
     <div css={navigationTabStyles}>
       {[prevStepId, currentStepId, nextStepId].map((id, index) => {
@@ -52,6 +61,7 @@ const NavigationTab: FC = () => {
               current={index === 1}
               label={`${arrows[index]}${getStepLabel(step!)}`}
               id={id}
+              onClick={handleClick}
             />
           );
         }

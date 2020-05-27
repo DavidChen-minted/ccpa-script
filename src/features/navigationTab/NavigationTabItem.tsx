@@ -1,18 +1,17 @@
 import React, { FC } from 'react';
 import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
-import { useDispatch } from 'react-redux';
-import { changeCurrentStepId } from 'features/step/stepSlice';
 
 interface Props {
   current?: boolean;
   label: string;
   id?: string;
+  onClick?: (id: string) => void;
 }
 
 const navigationTabItemStyles = (current = false) => css`
-  font-size: ${current ? rem(24) : rem(18)};
-  margin: ${rem(8)};
+  font-size: ${current ? rem(20) : rem(18)};
+  margin: ${rem(4)};
   font-family: inherent;
 
   ${!current &&
@@ -26,11 +25,15 @@ const navigationTabItemStyles = (current = false) => css`
   `};
 `;
 
-const NavigationTabItem: FC<Props> = ({ current = false, label, id = '' }) => {
-  const dispatch = useDispatch();
+const NavigationTabItem: FC<Props> = ({
+  current = false,
+  label,
+  id = '',
+  onClick,
+}) => {
   const handleClick = () => {
-    if (id) {
-      dispatch(changeCurrentStepId(id));
+    if (id && onClick) {
+      onClick(id);
     }
   };
   return !current ? (
