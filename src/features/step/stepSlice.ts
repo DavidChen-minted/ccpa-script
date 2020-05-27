@@ -1,10 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import stepAdapter, { Step, StepEntityState } from './stepEntity';
-import choiceControlAdapter, {
-  ChoiceControl,
-  ChoiceControlEntityState,
-} from './choiceControlEntity';
 import { getNextVisibleStepId } from './getStepId';
 
 export interface StepsState {
@@ -13,7 +9,6 @@ export interface StepsState {
 
 export interface StepState {
   steps: StepsState;
-  choiceControl: ChoiceControlEntityState;
   currentStepId?: string;
 }
 
@@ -30,7 +25,6 @@ const stepSlice = createSlice({
   name: 'step',
   initialState: {
     steps: {},
-    choiceControl: choiceControlAdapter.getInitialState(),
   } as StepState,
   reducers: {
     importParsedSteps: (
@@ -56,29 +50,11 @@ const stepSlice = createSlice({
       );
       return state;
     },
-    importChoiceControl: (
-      state,
-      action: PayloadAction<ChoiceControl[] | undefined>
-    ) => {
-      choiceControlAdapter.setAll(state.choiceControl, action.payload || []);
-    },
     changeCurrentStepId: (state, action: PayloadAction<string | undefined>) => {
       if (state.currentStepId !== action.payload) {
         state.currentStepId = action.payload;
       }
       return state;
-    },
-    updateSelectedChoiceId: (
-      state,
-      action: PayloadAction<{
-        stepId: string;
-        choiceId: ChoiceControl['selectedChoiceId'];
-      }>
-    ) => {
-      choiceControlAdapter.updateOne(state.choiceControl, {
-        id: action.payload.stepId,
-        changes: { selectedChoiceId: action.payload.choiceId },
-      });
     },
   },
 });
@@ -89,9 +65,4 @@ export interface GlobalStepState {
   step: StepState;
 }
 
-export const {
-  importParsedSteps,
-  importChoiceControl,
-  changeCurrentStepId,
-  updateSelectedChoiceId,
-} = stepSlice.actions;
+export const { importParsedSteps, changeCurrentStepId } = stepSlice.actions;

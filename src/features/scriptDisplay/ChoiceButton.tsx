@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { css } from '@emotion/core';
-import { Choice } from 'features/step/choiceControlEntity';
+import { Choice } from 'features/choiceControl/choiceControlEntity';
 import rem from 'utils/style/rem';
 
 interface Props {

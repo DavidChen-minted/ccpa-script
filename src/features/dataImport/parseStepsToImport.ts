@@ -5,7 +5,7 @@ import {
   Choices,
   ChoiceControl,
   instanceOfChoice,
-} from 'features/step/choiceControlEntity';
+} from 'features/choiceControl/choiceControlEntity';
 import { ParsedSteps } from 'features/step/stepSlice';
 
 export interface StepToImport {

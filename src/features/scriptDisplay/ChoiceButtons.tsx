@@ -2,13 +2,11 @@ import React, { FC, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   updateSelectedChoiceId,
-  GlobalStepState,
-} from 'features/step/stepSlice';
-import {
-  selectCurrentStepId,
-  selectChoiceControl,
-} from 'features/step/selector';
-import choiceControlAdapter from 'features/step/choiceControlEntity';
+  GlobalChoiceControlState,
+} from 'features/choiceControl/choiceControlSlice';
+import { selectCurrentStepId } from 'features/step/selector';
+import choiceControlAdapter from 'features/choiceControl/choiceControlEntity';
+import { selectChoiceControl } from 'features/choiceControl/selector';
 import ChoiceButton from './ChoiceButton';
 
 const {
@@ -17,7 +15,7 @@ const {
 
 const ChoiceButtons: FC = () => {
   const stepId = useSelector(selectCurrentStepId) || '';
-  const choiceControl = useSelector((state: GlobalStepState) =>
+  const choiceControl = useSelector((state: GlobalChoiceControlState) =>
     selectChoiceControlById(state, stepId)
   );
   const dispatch = useDispatch();

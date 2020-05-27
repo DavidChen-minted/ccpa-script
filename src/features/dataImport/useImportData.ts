@@ -16,10 +16,8 @@ import {
   importScriptSnippets,
   ScriptSnippetsToImport,
 } from 'features/scriptSnippet/scriptSnippetSlice';
-import {
-  importParsedSteps,
-  importChoiceControl,
-} from 'features/step/stepSlice';
+import { importParsedSteps } from 'features/step/stepSlice';
+import { importChoiceControl } from 'features/choiceControl/choiceControlSlice';
 import parseStepsToImport, { StepsToImport } from './parseStepsToImport';
 
 interface DataToImport {

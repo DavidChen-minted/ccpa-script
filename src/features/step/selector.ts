@@ -8,6 +8,3 @@ export const selectCheckScriptStep = (
 
 export const selectCurrentStepId = (state: GlobalStepState) =>
   state.step.currentStepId;
-
-export const selectChoiceControl = (state: GlobalStepState) =>
-  state.step.choiceControl;
