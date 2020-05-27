@@ -1,7 +1,10 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
-import sectionTitleStyles from 'styles/sectionTitleStyles';
+import sectionTitleStyles, {
+  hoverRightStyles,
+  hoverLeftStyles,
+} from 'styles/sectionTitleStyles';
 import BreakLine from 'styles/BreakLine';
 import { useSelector, useDispatch } from 'react-redux';
 import stepAdapter from 'features/step/stepEntity';
@@ -13,9 +16,14 @@ import useScreenHeight from 'utils/customHook/useScreenHeight';
 import { changeCurrentStepId } from 'features/step/stepSlice';
 import ContentTableItem from './ContentTableItem';
 
-const contentTableStyles = css`
+const expandedContentTableStyles = css`
   max-width: ${rem(400)};
   width: 30%;
+  border-right: ${rem(1)} solid black;
+  margin-right: ${rem(10)};
+`;
+
+const unexpandedContentTableStyles = css`
   border-right: ${rem(1)} solid black;
   margin-right: ${rem(10)};
 `;
@@ -37,21 +45,33 @@ const { selectAll: selectCheckScriptStepArray } = stepAdapter.getSelectors(
 );
 
 const ContentTable: FC = () => {
+  const [expanded, setExpanded] = useState(true);
+
   const stepArray = useSelector(selectCheckScriptStepArray);
   const currentStepId = useSelector(selectCurrentStepId);
 
   const { height, measureRef } = useScreenHeight();
 
   const dispatch = useDispatch();
-  const handleClick = useCallback(
+  const handleContentTableItemClick = useCallback(
     (id: string) => {
       dispatch(changeCurrentStepId(id));
     },
     [dispatch, changeCurrentStepId]
   );
-  return (
-    <div css={contentTableStyles}>
-      <h3 css={sectionTitleStyles}>content table</h3>
+  return expanded ? (
+    <div css={expandedContentTableStyles}>
+      <div>
+        <button
+          type="button"
+          css={[sectionTitleStyles(expanded), hoverLeftStyles]}
+          onClick={() => {
+            setExpanded(false);
+          }}
+        >
+          {`content table \u25C0`}
+        </button>
+      </div>
       <BreakLine />
       <div css={contentTableWindowStyles(height)} ref={measureRef}>
         {stepArray.map(({ id, visible, order }) => {
@@ -62,11 +82,23 @@ const ContentTable: FC = () => {
               visible={visible}
               order={order}
               selected={id === currentStepId}
-              onClick={handleClick}
+              onClick={handleContentTableItemClick}
             />
           );
         })}
       </div>
+    </div>
+  ) : (
+    <div css={unexpandedContentTableStyles}>
+      <button
+        type="button"
+        css={[sectionTitleStyles(expanded), hoverRightStyles]}
+        onClick={() => {
+          setExpanded(true);
+        }}
+      >
+        {`\u25B6`}
+      </button>
     </div>
   );
 };

@@ -15,7 +15,7 @@ import rem from 'utils/style/rem';
 import { changeCurrentStepId } from 'features/step/stepSlice';
 import NavigationTabItem from './NavigationTabItem';
 
-const arrows = ['\u25B2 ', '', '\u25BC '];
+const arrows = ['\u25B3 ', '', '\u25BD '];
 
 const navigationTabStyles = css`
   margin-bottom: ${rem(10)};

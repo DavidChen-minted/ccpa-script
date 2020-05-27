@@ -1,21 +1,53 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
-import sectionTitleStyles from 'styles/sectionTitleStyles';
+import sectionTitleStyles, {
+  hoverRightStyles,
+  hoverLeftStyles,
+} from 'styles/sectionTitleStyles';
 import BreakLine from 'styles/BreakLine';
 
-const scriptResultStyles = css`
+const expandedScriptResultStyles = css`
   max-width: ${rem(500)};
   width: 30%;
   border-left: ${rem(1)} solid black;
   margin-left: ${rem(10)};
 `;
 
+const unexpandedScriptResultStyles = css`
+  border-left: ${rem(1)} solid black;
+  margin-left: ${rem(10)};
+`;
+
 const ScriptResult: FC = () => {
-  return (
-    <div css={scriptResultStyles}>
-      <h3 css={sectionTitleStyles}>script result</h3>
+  const [expanded, setExpanded] = useState(true);
+  return expanded ? (
+    <div css={expandedScriptResultStyles}>
+      <div>
+        <button
+          type="button"
+          css={[sectionTitleStyles(expanded), hoverRightStyles]}
+          onClick={() => {
+            setExpanded(false);
+          }}
+        >
+          {`\u25B6 script result`}
+        </button>
+      </div>
+
       <BreakLine />
+    </div>
+  ) : (
+    <div css={unexpandedScriptResultStyles}>
+      <button
+        type="button"
+        css={[sectionTitleStyles(expanded), hoverLeftStyles]}
+        onClick={() => {
+          setExpanded(true);
+        }}
+      >
+        {`\u25C0`}
+      </button>
     </div>
   );
 };
