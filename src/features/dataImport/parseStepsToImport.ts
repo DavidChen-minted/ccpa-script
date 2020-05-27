@@ -7,11 +7,12 @@ import {
   instanceOfChoice,
 } from 'features/choiceControl/choiceControlEntity';
 import { ParsedSteps } from 'features/step/stepSlice';
+import { ParsedDatabaseScripts } from 'features/databaseScript/databaseScriptSlice';
 
 export interface StepToImport {
   description?: string;
   choices?: (string | Choice)[];
-  script: {
+  script?: {
     db: string;
     snippets: string[];
   };
@@ -78,8 +79,10 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
   }
   const parsedSteps: ParsedSteps = {};
   const choiceControl: ChoiceControl[] = [];
+  const parsedDatabaseScripts: ParsedDatabaseScripts = {};
   types.forEach((scriptType, scriptIndex) => {
     parsedSteps[scriptType] = parsedSteps[scriptType] || [];
+    parsedDatabaseScripts[scriptType] = parsedDatabaseScripts[scriptType] || [];
     const isFirst = scriptIndex === 0;
     steps.forEach(({ id, visible: visibleInput, ...stepsByType }, index) => {
       const visible = !(visibleInput === false);
@@ -113,12 +116,19 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
         scriptType,
         order: index,
         description,
-        script: stepToImport.script,
         dependency: stepToImport.dependency,
       });
+      if (stepToImport.script) {
+        parsedDatabaseScripts[scriptType].push({
+          id,
+          scriptType,
+          db: stepToImport.script.db,
+          snippets: stepToImport.script.snippets,
+        });
+      }
     });
   });
-  return { parsedSteps, choiceControl };
+  return { parsedSteps, choiceControl, parsedDatabaseScripts };
 };
 
 export default parseStepsToImport;

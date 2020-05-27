@@ -6,17 +6,11 @@ export interface Dependency {
   type?: string;
 }
 
-export interface Script {
-  db: string;
-  snippets: string[];
-}
-
 export interface Step {
   description?: string;
   id: string;
   scriptType: string;
   order: number;
-  script: Script;
   visible: boolean;
   dependency?: Dependency;
 }

@@ -1,5 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { css } from '@emotion/core';
 import {
   selectCurrentStepId,
   selectCheckScriptStep,
@@ -10,7 +11,6 @@ import {
   getNextVisibleStepId,
 } from 'features/step/getStepId';
 import getStepLabel from 'features/step/getStepLabel';
-import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
 import { changeCurrentStepId } from 'features/step/stepSlice';
 import NavigationTabItem from './NavigationTabItem';

@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
 import sectionTitleStyles, {
@@ -6,7 +7,6 @@ import sectionTitleStyles, {
   hoverLeftStyles,
 } from 'styles/sectionTitleStyles';
 import BreakLine from 'styles/BreakLine';
-import { useSelector, useDispatch } from 'react-redux';
 import stepAdapter from 'features/step/stepEntity';
 import {
   selectCheckScriptStep,
@@ -18,7 +18,7 @@ import ContentTableItem from './ContentTableItem';
 
 const expandedContentTableStyles = css`
   max-width: ${rem(400)};
-  width: 30%;
+  width: 25%;
   border-right: ${rem(1)} solid black;
   margin-right: ${rem(10)};
 `;

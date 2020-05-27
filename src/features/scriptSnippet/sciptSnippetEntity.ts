@@ -7,7 +7,6 @@ export interface ScriptSnippet {
 
 const scriptSnippetAdapter = createEntityAdapter<ScriptSnippet>({
   selectId: (snippet) => snippet.id,
-  sortComparer: (a, b) => a.id.localeCompare(b.id),
 });
 
 export default scriptSnippetAdapter;
