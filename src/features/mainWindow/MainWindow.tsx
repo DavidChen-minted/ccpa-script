@@ -4,8 +4,7 @@ import ContentTable from 'features/contentTable/ContentTable';
 import ScriptDisplay from 'features/scriptDisplay/ScriptDisplay';
 import ScriptResult from 'features/scriptResult/ScriptResult';
 import rem from 'utils/style/rem';
-import useWindowSize from 'utils/customHook/useWindowSize';
-import useMeasure from 'utils/customHook/useMeasure';
+import useScreenHeight from 'utils/customHook/useScreenHeight';
 
 const mainWindowStyles = (height = 0, marginBottom = 20) => css`
   display: flex;
@@ -17,13 +16,7 @@ const mainWindowStyles = (height = 0, marginBottom = 20) => css`
 `;
 
 const MainWindow: FC = () => {
-  const windowSize = useWindowSize();
-  const { size: elementSize, measureRef } = useMeasure();
-
-  const height =
-    windowSize.height && elementSize?.top
-      ? windowSize.height - elementSize?.top
-      : 0;
+  const { height, measureRef } = useScreenHeight();
 
   return (
     <div css={mainWindowStyles(height)} ref={measureRef}>

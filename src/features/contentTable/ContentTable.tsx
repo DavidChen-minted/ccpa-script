@@ -9,6 +9,7 @@ import {
   selectCheckScriptStep,
   selectCurrentStepId,
 } from 'features/step/selector';
+import useScreenHeight from 'utils/customHook/useScreenHeight';
 import ContentTableItem from './ContentTableItem';
 
 const contentTableStyles = css`
@@ -18,12 +19,16 @@ const contentTableStyles = css`
   margin-right: ${rem(10)};
 `;
 
-const contentTableWindowStyles = css`
+const contentTableWindowStyles = (height = 0, bottom = 20) => css`
   margin: ${rem(10)};
+  margin-bottom: ${rem(bottom)};
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+  overflow: hidden;
+  overflow-y: auto;
+  max-height: calc(${rem(height)} - ${rem(bottom)});
 `;
 
 const { selectAll: selectCheckScriptStepArray } = stepAdapter.getSelectors(
@@ -33,11 +38,13 @@ const { selectAll: selectCheckScriptStepArray } = stepAdapter.getSelectors(
 const ContentTable: FC = () => {
   const stepArray = useSelector(selectCheckScriptStepArray);
   const currentStepId = useSelector(selectCurrentStepId);
+
+  const { height, measureRef } = useScreenHeight();
   return (
     <div css={contentTableStyles}>
       <h3 css={sectionTitleStyles}>content table</h3>
       <BreakLine />
-      <div css={contentTableWindowStyles}>
+      <div css={contentTableWindowStyles(height)} ref={measureRef}>
         {stepArray.map(({ id, visible, order }) => {
           return (
             <ContentTableItem
