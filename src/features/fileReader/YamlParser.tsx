@@ -6,7 +6,7 @@ const YamlParser: FC = () => {
   const [yamlData, setYamlData] = useState<any>(undefined);
 
   useImportData(yamlData);
-  return <YamlFileInput callbackOnLoad={setYamlData} />;
+  return yamlData ? null : <YamlFileInput callbackOnLoad={setYamlData} />;
 };
 
 export default YamlParser;
