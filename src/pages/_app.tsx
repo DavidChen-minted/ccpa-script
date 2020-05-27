@@ -2,7 +2,7 @@ import React from 'react';
 import { NextComponentType } from 'next';
 import { AppContext, AppProps } from 'next/app';
 import { Provider } from 'react-redux';
-import { Global } from '@emotion/core';
+import { Global, css } from '@emotion/core';
 import { globalButtonReset } from 'utils/style/buttonReset';
 import withRedux from 'utils/redux/withRedux';
 import makeStore from 'stores';
@@ -18,6 +18,10 @@ export interface ExtendedAppProps<
   store: ReturnType<typeof makeStore>;
 }
 
+const globalStyles = css`
+  box-sizing: border-box;
+`;
+
 const myApp: NextComponentType<
   AppContext,
   ModifiedAppInitialProps,
@@ -25,7 +29,7 @@ const myApp: NextComponentType<
 > = ({ Component, pageProps, appProps, store }) => {
   return (
     <Provider store={store}>
-      <Global styles={globalButtonReset} />
+      <Global styles={[globalButtonReset, globalStyles]} />
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Component {...appProps} {...pageProps} />
     </Provider>

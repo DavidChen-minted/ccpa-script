@@ -11,9 +11,6 @@ const mainWindowStyles = css`
   justify-content: space-between;
   align-items: flex-start;
   margin: ${rem(20)} 0;
-  & > div {
-    border: 1px solid black;
-  }
 `;
 
 const MainWindow: FC = () => {
