@@ -87,6 +87,7 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
       if (!instanceOfStepToImport(stepToImport)) {
         return;
       }
+      const description = stepToImport.description?.slice(0, -1);
       if (isFirst && !!visible) {
         let choices: Choices | undefined;
         if (stepToImport.choices && Array.isArray(stepToImport.choices)) {
@@ -111,7 +112,7 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
         visible,
         scriptType,
         order: index,
-        description: stepToImport.description,
+        description,
         script: stepToImport.script,
         dependency: stepToImport.dependency,
       });
