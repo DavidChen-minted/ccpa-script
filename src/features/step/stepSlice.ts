@@ -5,7 +5,7 @@ import choiceControlAdapter, {
   ChoiceControl,
   ChoiceControlEntityState,
 } from './choiceControlEntity';
-import getNextVisibleStepId from './getNextVisibleStep';
+import { getNextVisibleStepId } from './getStepId';
 
 export interface StepsState {
   [key: string]: StepEntityState;

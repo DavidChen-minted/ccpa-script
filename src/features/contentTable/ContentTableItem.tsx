@@ -4,6 +4,7 @@ import { Step } from 'features/step/stepEntity';
 import rem from 'utils/style/rem';
 import { useDispatch } from 'react-redux';
 import { changeCurrentStepId } from 'features/step/stepSlice';
+import getStepLabel from 'features/step/getStepLabel';
 
 interface Props extends Pick<Step, 'id' | 'order' | 'visible'> {
   selected: boolean;
@@ -27,7 +28,7 @@ const contentTableItemStyles = (visible = false, selected = false) => css`
 `;
 
 const ContentTableItem: FC<Props> = ({ id, order, visible, selected }) => {
-  const content = `step ${order}: ${id}`;
+  const content = getStepLabel({ id, order });
   const dispatch = useDispatch();
   const handleClick = () => {
     dispatch(changeCurrentStepId(id));
