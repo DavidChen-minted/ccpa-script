@@ -7,7 +7,7 @@ import BreakLine from 'styles/BreakLine';
 const scriptResultStyles = css`
   max-width: ${rem(500)};
   width: 30%;
-  border-left: 1px solid black;
+  border-left: ${rem(1)} solid black;
   margin-left: ${rem(10)};
 `;
 

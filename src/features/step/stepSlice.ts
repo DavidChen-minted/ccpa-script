@@ -62,6 +62,12 @@ const stepSlice = createSlice({
     ) => {
       choiceControlAdapter.setAll(state.choiceControl, action.payload || []);
     },
+    changeCurrentStepId: (state, action: PayloadAction<string | undefined>) => {
+      if (state.currentStepId !== action.payload) {
+        state.currentStepId = action.payload;
+      }
+      return state;
+    },
   },
 });
 
@@ -71,4 +77,8 @@ export interface GlobalStepState {
   step: StepState;
 }
 
-export const { importParsedSteps, importChoiceControl } = stepSlice.actions;
+export const {
+  importParsedSteps,
+  importChoiceControl,
+  changeCurrentStepId,
+} = stepSlice.actions;

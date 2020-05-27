@@ -9,7 +9,7 @@ export interface Props {
 }
 
 export const fileButtonStyles = css`
-  border: 1px solid black;
+  border: ${rem(1)} solid black;
   display: inline-block;
   padding: 6px 12px;
   cursor: pointer;

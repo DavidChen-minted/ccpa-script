@@ -4,7 +4,7 @@ import rem from 'utils/style/rem';
 
 const breakLineStyles = css`
   width: calc(100% - 2 * ${rem(5)});
-  border-top: 1px solid black;
+  border-top: ${rem(1)} solid black;
   margin: ${rem(5)};
 `;
 
