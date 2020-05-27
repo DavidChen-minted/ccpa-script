@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { css } from '@emotion/core';
 import NavigationTab from 'features/navigationTab/NavigationTab';
-import ScriptDisplay from 'features/scriptDisplay/ScriptDisplay';
+import Questionnaire from 'features/choiceControl/Questionnaire';
 import VariableForm from 'features/variable/VariableForm';
 
-const MiddlePanelStyles = css`
+const middlePanelStyles = css`
   width: 100%;
 `;
 
@@ -17,12 +17,12 @@ const topBarStyles = css`
 
 const MiddlePanel: FC = () => {
   return (
-    <div css={MiddlePanelStyles}>
+    <div css={middlePanelStyles}>
       <div css={topBarStyles}>
         <NavigationTab />
         <VariableForm />
       </div>
-      <ScriptDisplay />
+      <Questionnaire />
     </div>
   );
 };

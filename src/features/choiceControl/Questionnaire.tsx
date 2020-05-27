@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { css } from '@emotion/core';
+import { useSelector } from 'react-redux';
 import stepAdapter from 'features/step/stepEntity';
 import {
   selectCheckScriptStep,
   selectCurrentStepId,
 } from 'features/step/selector';
-import { useSelector } from 'react-redux';
 import rem from 'utils/style/rem';
 import ChoiceButtons from './ChoiceButtons';
 
-const ScriptDisplayStyles = css`
+const questionnaireStyles = css`
   width: 100%;
   margin: ${rem(8)};
 `;
@@ -23,11 +23,11 @@ const { selectEntities: selectStepEntities } = stepAdapter.getSelectors(
   selectCheckScriptStep
 );
 
-const ScriptDisplay: FC = () => {
+const Questionnaire: FC = () => {
   const stepEntities = useSelector(selectStepEntities);
   const currentStepId = useSelector(selectCurrentStepId);
   return (
-    <div css={ScriptDisplayStyles}>
+    <div css={questionnaireStyles}>
       <h2 css={stepDescriptionTitleStyles}>
         {stepEntities[currentStepId || '']?.description}
       </h2>
@@ -36,4 +36,4 @@ const ScriptDisplay: FC = () => {
   );
 };
 
-export default ScriptDisplay;
+export default Questionnaire;
