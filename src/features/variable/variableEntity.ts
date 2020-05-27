@@ -1,6 +1,7 @@
 import { createEntityAdapter } from '@reduxjs/toolkit';
 
 export interface Variable {
+  value?: string;
   description: string;
   id: string;
 }

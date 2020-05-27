@@ -24,12 +24,24 @@ const variableSlice = createSlice({
         return;
       }
       const parsedVariables = Object.entries(variablesToImport).map(
-        ([id, value]) => ({
-          id,
-          description: value?.description ?? '',
-        })
+        ([id, value]) => {
+          const description = value?.description?.slice(0, -1);
+          return {
+            id,
+            description: description ?? '',
+          };
+        }
       );
       variableAdapter.setAll(state, parsedVariables);
+    },
+    updateVariableValue: (
+      state,
+      action: PayloadAction<{ id: string; value: string }>
+    ) => {
+      variableAdapter.updateOne(state, {
+        id: action.payload.id,
+        changes: { value: action.payload.value },
+      });
     },
   },
 });
@@ -42,4 +54,8 @@ export interface GlobalVariableState {
   variable: VariableState;
 }
 
-export const { variableReceived, importVariables } = variableSlice.actions;
+export const {
+  variableReceived,
+  importVariables,
+  updateVariableValue,
+} = variableSlice.actions;
