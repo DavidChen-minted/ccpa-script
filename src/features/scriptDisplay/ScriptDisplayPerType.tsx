@@ -39,7 +39,7 @@ const ScriptDisplayPerType: FC<Props> = ({
   return (
     <>
       <div css={[scriptTypeStyles, gridPositionStyles(1, col)]}>
-        {`${scriptType}:`}
+        {scriptType ? `${scriptType}:` : ''}
       </div>
       <div css={[scriptDescriptionStyles, gridPositionStyles(2, col)]}>
         {description}
