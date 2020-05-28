@@ -1,12 +1,14 @@
-import React, { FC, useState, useEffect, ChangeEvent } from 'react';
+import React, { FC, useState, useEffect, ChangeEvent, useMemo } from 'react';
 import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
 import constants from 'styles/constants';
+import { detectReplaceableVariable } from 'features/variable/variableReplace';
 
 interface Props {
   script: string;
   db: string;
   onChangeClick?: (script: string) => void;
+  onReplaceClick?: (script: string) => string;
 }
 
 const scriptInputStyles = css`
@@ -18,6 +20,7 @@ const scriptInputStyles = css`
 `;
 
 const textareaStyles = css`
+  font-size: ${rem(14)};
   display: block;
   max-width: 100%;
   width: calc(100% - ${rem(6)});
@@ -48,7 +51,12 @@ const buttonAreaStyles = css`
   }
 `;
 
-const ScriptInput: FC<Props> = ({ script, db, onChangeClick }) => {
+const ScriptInput: FC<Props> = ({
+  script,
+  db,
+  onChangeClick,
+  onReplaceClick,
+}) => {
   const [value, setValue] = useState('');
   useEffect(() => {
     setValue(script);
@@ -67,6 +75,15 @@ const ScriptInput: FC<Props> = ({ script, db, onChangeClick }) => {
   const handleDiscardClick = () => {
     setValue(script);
   };
+  const handleReplaceClick = () => {
+    if (onReplaceClick) {
+      setValue(onReplaceClick(script));
+    }
+  };
+  const variableReplaceable = useMemo(
+    () => !!onReplaceClick && detectReplaceableVariable(value),
+    [onReplaceClick, detectReplaceableVariable, value]
+  );
   return (
     <div css={scriptInputStyles}>
       <label htmlFor="script">{`db: ${db}`}</label>
@@ -82,6 +99,11 @@ const ScriptInput: FC<Props> = ({ script, db, onChangeClick }) => {
         <button type="button" onClick={handleCoptyToClipboardClick}>
           {`copy to \n clipboard`}
         </button>
+        {variableReplaceable ? (
+          <button type="button" onClick={handleReplaceClick}>
+            replace
+          </button>
+        ) : undefined}
         {script !== value && onChangeClick ? (
           <button type="button" onClick={handleChangeClick}>
             change

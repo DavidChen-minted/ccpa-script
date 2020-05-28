@@ -1,9 +1,12 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { css } from '@emotion/core';
 import { selectCurrentStepId } from 'features/step/selector';
 import useSelectAllScripts from 'features/databaseScript/useSelectAllScripts';
 import { updateScript } from 'features/databaseScript/databaseScriptSlice';
+import variableAdapter from 'features/variable/variableEntity';
+import { selectVariable } from 'features/variable/selector';
+import { replaceVariables } from 'features/variable/variableReplace';
 import ScriptDisplayPerType from './ScriptDisplayPerType';
 
 const scriptDisplayStyles = css`
@@ -15,6 +18,10 @@ const scriptDisplayStyles = css`
     width: 100%;
   }
 `;
+
+const { selectAll: selectAllVariables } = variableAdapter.getSelectors(
+  selectVariable
+);
 
 const ScriptDisplay: FC = () => {
   const currentStepId = useSelector(selectCurrentStepId);
@@ -37,6 +44,10 @@ const ScriptDisplay: FC = () => {
   }) => (script: string) => {
     dispatch(updateScript({ id, scriptType, script }));
   };
+  const variables = useSelector(selectAllVariables);
+  const handleReplaceClick = (script: string) =>
+    replaceVariables({ text: script, variables });
+
   return (
     <div css={scriptDisplayStyles}>
       {scripts?.map((s) => {
@@ -55,6 +66,7 @@ const ScriptDisplay: FC = () => {
             script={script}
             scriptType={scriptType}
             onChangeClick={handleChangeClick({ id, scriptType })}
+            onReplaceClick={handleReplaceClick}
           />
         );
       })}

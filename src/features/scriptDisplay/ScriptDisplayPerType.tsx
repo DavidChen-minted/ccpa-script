@@ -9,6 +9,7 @@ interface Props {
   db: string;
   script: string;
   onChangeClick?: (script: string) => void;
+  onReplaceClick?: (script: string) => string;
 }
 
 const scriptTypeStyles = css`
@@ -33,12 +34,18 @@ const ScriptDisplayPerType: FC<Props> = ({
   script = '',
   description = '',
   onChangeClick,
+  onReplaceClick,
 }) => {
   return (
     <div css={scriptDisplayPerTypeStyles}>
       <div css={scriptTypeStyles}>{`${scriptType}:`}</div>
       <div css={scriptDescriptionStyles}>{description}</div>
-      <ScriptInput script={script} db={db} onChangeClick={onChangeClick} />
+      <ScriptInput
+        script={script}
+        db={db}
+        onChangeClick={onChangeClick}
+        onReplaceClick={onReplaceClick}
+      />
     </div>
   );
 };

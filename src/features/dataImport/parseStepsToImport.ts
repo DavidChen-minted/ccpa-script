@@ -8,6 +8,8 @@ import {
 } from 'features/choiceControl/choiceControlEntity';
 import { ParsedSteps } from 'features/step/stepSlice';
 import { ParsedDatabaseScripts } from 'features/databaseScript/databaseScriptSlice';
+import { ScriptSnippetsToImport } from 'features/scriptSnippet/scriptSnippetSlice';
+import { combineSnippetsAtImport } from 'features/databaseScript/generateScript';
 
 export interface StepToImport {
   description?: string;
@@ -28,6 +30,7 @@ export interface StepsToImport {
 export interface ParseStepsToImportArgs {
   steps?: StepsToImport[];
   types: string[];
+  snippets?: ScriptSnippetsToImport;
 }
 
 const instanceOfStepToImport = (object: any): object is StepToImport => {
@@ -73,7 +76,11 @@ const instanceOfStepToImport = (object: any): object is StepToImport => {
   return true;
 };
 
-const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
+const parseStepsToImport = ({
+  types,
+  steps,
+  snippets: snippetsObj,
+}: ParseStepsToImportArgs) => {
   if (!(steps && Array.isArray(steps) && types && Array.isArray(types))) {
     return null;
   }
@@ -119,12 +126,15 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
         dependency: stepToImport.dependency,
       });
       if (stepToImport.script) {
+        const { db, snippets } = stepToImport.script;
+        const script = combineSnippetsAtImport({ snippets, snippetsObj });
         parsedDatabaseScripts[scriptType].push({
           id,
           scriptType,
-          db: stepToImport.script.db,
+          db,
           description,
-          snippets: stepToImport.script.snippets,
+          snippets,
+          script,
         });
       }
     });

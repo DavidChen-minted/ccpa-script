@@ -47,6 +47,7 @@ const useImportData = (dataToImport?: DataToImport) => {
       parseStepsToImport({
         steps: dataToImport?.steps,
         types: scriptTypes,
+        snippets: dataToImport?.snippets,
       }) || {};
     dispatch(importParsedSteps({ steps: parsedSteps, types: scriptTypes }));
     dispatch(importChoiceControl(choiceControl));

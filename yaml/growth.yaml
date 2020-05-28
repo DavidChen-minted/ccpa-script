@@ -1,6 +1,5 @@
 steps:
   - id: begin
-    visible: false
     check:
       script:
         db: drupal
