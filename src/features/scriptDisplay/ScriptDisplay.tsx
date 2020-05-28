@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useCallback } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { css } from '@emotion/core';
 import { selectCurrentStepId } from 'features/step/selector';
