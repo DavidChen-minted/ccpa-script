@@ -10,19 +10,17 @@ steps:
         db: drupal
         snippets:
           - set_request_number
-          - set_user_id
+          - set_user_id_var
           - compose_email_placeholder
           - compose_text_placeholder
-  - id: email
+  - id: users
     check:
       description: >
         check if the email is in users table in bidata DB
-      choices:
-        - yes
-        - no
       script:
         db: drupal
         snippets:
+          - set_email_var
           - find_user_id
           - show_user_id
     delete:
@@ -32,9 +30,49 @@ steps:
         db: drupal
         snippets:
           - update_placeholder_in_users
+  - id: sessions
+    check:
+      description: >
+        check if the user id is in sessions table in sessions DB
+      script:
+        db: sessions
+        snippets:
+          - set_user_id_var
+          - find_sessions
+  - id: friend_email
+    check:
+      description: >
+        check if the email is in friend_email table in bidata DB
+      script:
+        db: drupal
+        snippets:
+          - set_email_var
+          - find_friend_email_id
+          - find_friend_email
+  - id: friend_address
+    check:
+      description: >
+        check if the friend email id is in friend_address table in bidata DB
+      script:
+        db: drupal
+        snippets:
+          - set_email_var
+          - find_friend_email_id
+          - find_friend_address_id
+          - find_friend_address
+  - id: minted_account
+    check:
+      description: >
+        check if the user id is in minted_account table in bidata DB
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_minted_account
 types:
   - check
   - delete
+  - Validation
 db:
   - drupal
   - sessions
@@ -66,7 +104,7 @@ snippets:
     select @UID;
   set_request_number: |
     set @requestnumber = {{requestNumber}};
-  set_user_id: |
+  set_user_id_var: |
     set @UID = {{userId}};
   compose_email_placeholder: |
     select concat("deleted-onetrust-req-", @requestnumber, "@privacy.mntd.net") into @emailplaceholder;
@@ -80,3 +118,16 @@ snippets:
     mail = @emailplaceholder,
     pass = textplaceholder,
     where uid = @UID;
+  find_sessions: |
+    select * from sessions where uid = @UID;
+  find_friend_email_id: |
+    select id into @friendemailid from friend_email where email = @email;
+  find_friend_email: |
+    select * from friend_email where id = @friendemailid;
+  find_friend_address_id: |
+    select friend_address_id into @friend_address_id
+    from friend_email where id = @friendemailid;
+  find_friend_address: |
+    select * from friend_address where id = @friendaddressid;
+  find_minted_account: |
+    select * from minted_account where user_id = @UID;
