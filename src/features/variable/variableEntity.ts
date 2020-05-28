@@ -8,7 +8,6 @@ export interface Variable {
 
 const variableAdapter = createEntityAdapter<Variable>({
   selectId: (variable) => variable.id,
-  sortComparer: (a, b) => a.id.localeCompare(b.id),
 });
 
 export default variableAdapter;
