@@ -23,6 +23,12 @@ const choiceButtonStyles = css`
   & > * {
     margin: ${rem(5)};
   }
+  & > div {
+    margin-left: ${rem(10)};
+  }
+  & > p {
+    margin-right: ${rem(10)};
+  }
   &:hover {
     border-color: blue;
     background-color: #dcdcdc;
@@ -38,8 +44,8 @@ const radioCharacterStyles = (selected = false) => css`
   border-radius: 50%;
   border: ${rem(1)} solid black;
   ${selected && `background-color: black`};
-  width: ${rem(16)};
-  height: ${rem(16)};
+  width: ${rem(10)};
+  height: ${rem(10)};
 `;
 
 const ChoiceButton: FC<Props> = ({ choice, selected = false, onClick }) => {

@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { css } from '@emotion/core';
 import { selectCurrentStepId } from 'features/step/selector';
 import useSelectAllScripts from 'features/databaseScript/useSelectAllScripts';
+import { updateScript } from 'features/databaseScript/databaseScriptSlice';
 import ScriptDisplayPerType from './ScriptDisplayPerType';
 
 const scriptDisplayStyles = css`
@@ -26,6 +27,16 @@ const ScriptDisplay: FC = () => {
       (type) => allScripts[type][currentStepId]
     );
   }, [currentStepId, allScripts]);
+  const dispatch = useDispatch();
+  const handleChangeClick = ({
+    id,
+    scriptType,
+  }: {
+    id: string;
+    scriptType: string;
+  }) => (script: string) => {
+    dispatch(updateScript({ id, scriptType, script }));
+  };
   return (
     <div css={scriptDisplayStyles}>
       {scripts?.map((s) => {
@@ -43,6 +54,7 @@ const ScriptDisplay: FC = () => {
             description={description}
             script={script}
             scriptType={scriptType}
+            onChangeClick={handleChangeClick({ id, scriptType })}
           />
         );
       })}

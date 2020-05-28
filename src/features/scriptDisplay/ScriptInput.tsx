@@ -48,7 +48,7 @@ const buttonAreaStyles = css`
   }
 `;
 
-const ScriptInput: FC<Props> = ({ script, db }) => {
+const ScriptInput: FC<Props> = ({ script, db, onChangeClick }) => {
   const [value, setValue] = useState('');
   useEffect(() => {
     setValue(script);
@@ -56,8 +56,16 @@ const ScriptInput: FC<Props> = ({ script, db }) => {
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value);
   };
+  const handleChangeClick = () => {
+    if (onChangeClick) {
+      onChangeClick(value);
+    }
+  };
   const handleCoptyToClipboardClick = () => {
     navigator.clipboard.writeText(value);
+  };
+  const handleDiscardClick = () => {
+    setValue(script);
   };
   return (
     <div css={scriptInputStyles}>
@@ -74,6 +82,16 @@ const ScriptInput: FC<Props> = ({ script, db }) => {
         <button type="button" onClick={handleCoptyToClipboardClick}>
           {`copy to \n clipboard`}
         </button>
+        {script !== value && onChangeClick ? (
+          <button type="button" onClick={handleChangeClick}>
+            change
+          </button>
+        ) : undefined}
+        {script !== value ? (
+          <button type="button" onClick={handleDiscardClick}>
+            discard
+          </button>
+        ) : undefined}
       </div>
     </div>
   );
