@@ -11,7 +11,7 @@ import ChoiceButtons from './ChoiceButtons';
 
 const questionnaireStyles = css`
   width: 100%;
-  margin: ${rem(8)};
+  margin: ${rem(10)} 0;
 `;
 
 const stepDescriptionTitleStyles = css`

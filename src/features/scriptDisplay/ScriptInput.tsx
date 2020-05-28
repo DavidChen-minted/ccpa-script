@@ -1,10 +1,11 @@
 import React, { FC, useState, useEffect, ChangeEvent, useMemo } from 'react';
-import { css } from '@emotion/core';
+import { css, SerializedStyles } from '@emotion/core';
 import rem from 'utils/style/rem';
 import constants from 'styles/constants';
 import { detectReplaceableVariable } from 'features/variable/variableReplace';
 
 interface Props {
+  styles: SerializedStyles;
   script: string;
   db: string;
   onChangeClick?: (script: string) => void;
@@ -56,6 +57,7 @@ const ScriptInput: FC<Props> = ({
   db,
   onChangeClick,
   onReplaceClick,
+  styles,
 }) => {
   const [value, setValue] = useState('');
   useEffect(() => {
@@ -85,7 +87,7 @@ const ScriptInput: FC<Props> = ({
     [onReplaceClick, detectReplaceableVariable, value]
   );
   return (
-    <div css={scriptInputStyles}>
+    <div css={[scriptInputStyles, styles]}>
       <label htmlFor="script">{`db: ${db}`}</label>
       <textarea
         id="script"

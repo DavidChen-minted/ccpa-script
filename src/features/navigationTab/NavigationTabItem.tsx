@@ -10,12 +10,14 @@ interface Props {
 }
 
 const navigationTabItemStyles = (current = false) => css`
-  font-size: ${current ? rem(20) : rem(18)};
+  font-size: ${current ? rem(20) : rem(14)};
   margin: ${rem(4)};
   font-family: inherent;
+  font-weight: bold;
 
   ${!current &&
   `
+    font-weight: normal;
     text-align: left;
     color: blue;
     cursor: pointer;

@@ -7,16 +7,15 @@ import { updateScript } from 'features/databaseScript/databaseScriptSlice';
 import variableAdapter from 'features/variable/variableEntity';
 import { selectVariable } from 'features/variable/selector';
 import { replaceVariables } from 'features/variable/variableReplace';
+import rem from 'utils/style/rem';
 import ScriptDisplayPerType from './ScriptDisplayPerType';
 
-const scriptDisplayStyles = css`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  & > * {
-    width: 100%;
-  }
+const scriptDisplayStyles = (numCol = 1) => css`
+  display: grid;
+  grid-template-columns: repeat(${numCol}, 1fr);
+  grid-template-rows: repeat(3, auto);
+  justify-items: stretch;
+  column-gap: ${rem(15)};
 `;
 
 const { selectAll: selectAllVariables } = variableAdapter.getSelectors(
@@ -49,8 +48,8 @@ const ScriptDisplay: FC = () => {
     replaceVariables({ text: script, variables });
 
   return (
-    <div css={scriptDisplayStyles}>
-      {scripts?.map((s) => {
+    <div css={scriptDisplayStyles(scripts?.length)}>
+      {scripts?.map((s, index) => {
         const {
           id = '',
           db = '',
@@ -60,7 +59,8 @@ const ScriptDisplay: FC = () => {
         } = s || {};
         return (
           <ScriptDisplayPerType
-            key={`script-${id}-${scriptType}`}
+            key={`script-${index}-${id}-${scriptType}`}
+            col={index + 1}
             db={db}
             description={description}
             script={script}
