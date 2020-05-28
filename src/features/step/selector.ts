@@ -6,5 +6,8 @@ export const selectCheckScriptStep = (
   state: GlobalStepState & GlobalScriptTypeState
 ) => state.step.steps[state.scriptType[0]] || stepAdapter.getInitialState();
 
+export const selectStepByScriptType = (state: GlobalStepState, type: string) =>
+  state.step.steps[type] || stepAdapter.getInitialState();
+
 export const selectCurrentStepId = (state: GlobalStepState) =>
   state.step.currentStepId;

@@ -3,6 +3,7 @@ import { css } from '@emotion/core';
 import NavigationTab from 'features/navigationTab/NavigationTab';
 import Questionnaire from 'features/choiceControl/Questionnaire';
 import VariableForm from 'features/variable/VariableForm';
+import ScriptDisplay from 'features/scriptDisplay/ScriptDisplay';
 
 const middlePanelStyles = css`
   width: 100%;
@@ -23,6 +24,7 @@ const MiddlePanel: FC = () => {
         <VariableForm />
       </div>
       <Questionnaire />
+      <ScriptDisplay />
     </div>
   );
 };

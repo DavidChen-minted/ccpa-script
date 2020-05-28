@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { css } from '@emotion/core';
 import { Choice } from 'features/choiceControl/choiceControlEntity';
 import rem from 'utils/style/rem';
+import constants from 'styles/constants';
 
 interface Props {
   choice: Choice;
@@ -17,10 +18,19 @@ const choiceButtonStyles = css`
   justify-content: flex-start;
   align-items: center;
   margin: ${rem(12)} ${rem(8)};
-  height: ${rem(36)};
+  height: ${rem(constants.BUTTON_HEIGHT)};
   border: ${rem(1)} solid black;
   & > * {
     margin: ${rem(5)};
+  }
+  &:hover {
+    border-color: blue;
+    background-color: #dcdcdc;
+    color: blue;
+  }
+  &:active {
+    background-color: transparent;
+    color: black;
   }
 `;
 

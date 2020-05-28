@@ -123,6 +123,7 @@ const parseStepsToImport = ({ types, steps }: ParseStepsToImportArgs) => {
           id,
           scriptType,
           db: stepToImport.script.db,
+          description,
           snippets: stepToImport.script.snippets,
         });
       }

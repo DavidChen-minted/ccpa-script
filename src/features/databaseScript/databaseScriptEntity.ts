@@ -4,6 +4,7 @@ export interface DatabaseScript {
   id: string;
   scriptType: string;
   script?: string;
+  description?: string;
   db: string;
   snippets: string[];
 }
