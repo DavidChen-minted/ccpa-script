@@ -21,7 +21,8 @@ const scriptInputStyles = css`
 `;
 
 const textareaStyles = css`
-  font-size: ${rem(14)};
+  font-size: ${rem(16)};
+  font-family: Helvetica;
   display: block;
   max-width: 100%;
   width: calc(100% - ${rem(6)});
