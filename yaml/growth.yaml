@@ -69,6 +69,52 @@ steps:
         snippets:
           - set_user_id_var
           - find_minted_account
+  - id: minted_order_incomplete
+    check:
+      description: >
+        check if the user id is in minted_order table in bidata DB and 
+        order has been placed and NOT completed
+      choices:
+        - id: yes
+          notes: >
+            TODO: We need to wait for the order to be completed 
+            before we delete data
+        - id: no
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_minted_order_incomplete
+  - id: minted_order_complete
+    check:
+      description: >
+        check if the user id is in minted_order table in bidata DB and 
+        order has been placed, completed, and not passed the return policy, 
+        3 months after purchase
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_minted_order_complete
+  - id: minted_order_digital
+    check:
+      dependency:
+        id: minted_order_complete
+        choice: yes
+        type: check
+      description: >
+        check if the minted_order_line_item is digital
+      choices:
+        - id: yes
+        - id: no
+          notes: >
+            TODO: We need to wait for the return policy to pass before we delete data
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_minted_order_digital
+  
 types:
   - check
   - delete
@@ -131,3 +177,26 @@ snippets:
     select * from friend_address where id = @friendaddressid;
   find_minted_account: |
     select * from minted_account where user_id = @UID;
+  find_minted_order_incomplete: |
+    select *
+    from minted_order
+    where owner_id = @UID
+    and is_placed = 1
+    and minted_state_diagram_state_id <> 150;
+  find_minted_order_complete: |
+    select *
+    from minted_order
+    where owner_id = @UID
+    and is_placed = 1
+    and minted_state_diagram_state_id = 150
+    and date_add(order_placement_date, interval 3 month) >= now();
+  find_minted_order_digital: |
+    select moli.*
+    from minted_order mo
+    inner join minted_order_line_item moli
+    on mo.id = moli.minted_order_id
+    and moli.line_item_type = 'product'
+    where owner_id = @UID
+    and is_placed = 1
+    and minted_state_diagram_state_id = 150
+    and date_add(order_placement_date, interval 3 month) >= now();

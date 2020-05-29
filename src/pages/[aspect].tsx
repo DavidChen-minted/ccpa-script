@@ -7,7 +7,6 @@ import { safeLoad } from 'js-yaml';
 import useImportData from 'features/dataImport/useImportData';
 import MainPanel from 'features/mainPanel/MainPanel';
 import pageTitleStyles from 'styles/pageTitleStyles';
-import capitalizeFirstLetter from 'utils/common/capitalizeFirstLetter';
 
 export interface Props {
   yamlData?: any;
@@ -23,9 +22,7 @@ const AspectPage: NextPage<Props> = ({ yamlData, aspect }) => {
 
   return (
     <main>
-      <h1 css={pageTitleStyles}>
-        {`${capitalizeFirstLetter(aspect)} CCPA Script`}
-      </h1>
+      <h1 css={pageTitleStyles}>{`${aspect} CCPA script`}</h1>
       <MainPanel />
     </main>
   );

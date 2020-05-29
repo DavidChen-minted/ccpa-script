@@ -12,7 +12,7 @@ interface Props {
 const navigationTabItemStyles = (current = false) => css`
   font-size: ${current ? rem(20) : rem(14)};
   margin: ${rem(4)};
-  font-family: inherent;
+  font-family: inherit;
   font-weight: bold;
 
   ${!current &&

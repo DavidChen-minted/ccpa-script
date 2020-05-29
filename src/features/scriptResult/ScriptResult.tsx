@@ -31,7 +31,7 @@ const ScriptResult: FC = () => {
             setExpanded(false);
           }}
         >
-          {`\u25B6 script result`}
+          {`\u25B6 result`}
         </button>
       </div>
 

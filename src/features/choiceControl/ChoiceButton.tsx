@@ -10,6 +10,12 @@ interface Props {
   onClick?: (id: string) => void;
 }
 
+const choiceButtonRowStyles = css`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
 const choiceButtonStyles = css`
   cursor: pointer;
   display: flex;
@@ -55,14 +61,13 @@ const ChoiceButton: FC<Props> = ({ choice, selected = false, onClick }) => {
     }
   };
   return (
-    <button type="button" onClick={handleClick} css={choiceButtonStyles}>
-      <div css={radioCharacterStyles(selected)} />
-      <p>
-        {`${choice.label || choice.id}${
-          choice.notes ? ` (${choice.notes})` : ''
-        }`}
-      </p>
-    </button>
+    <div css={choiceButtonRowStyles}>
+      <button type="button" onClick={handleClick} css={choiceButtonStyles}>
+        <div css={radioCharacterStyles(selected)} />
+        <p>{choice.label || choice.id}</p>
+      </button>
+      <p>{choice.notes ? `- ${choice.notes}` : ''}</p>
+    </div>
   );
 };
 

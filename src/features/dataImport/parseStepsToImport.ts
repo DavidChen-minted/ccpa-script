@@ -10,6 +10,7 @@ import { ParsedSteps } from 'features/step/stepSlice';
 import { ParsedDatabaseScripts } from 'features/databaseScript/databaseScriptSlice';
 import { ScriptSnippetsToImport } from 'features/scriptSnippet/scriptSnippetSlice';
 import { combineSnippetsAtImport } from 'features/databaseScript/generateScript';
+import removeNewlineAtEnd from 'utils/common/removeNewlineAtEnd';
 
 export interface StepToImport {
   description?: string;
@@ -66,8 +67,8 @@ const instanceOfStepToImport = (object: any): object is StepToImport => {
     }
     for (let i = 0; i < object.choices.length; i += 1) {
       if (
-        typeof object.choices[i] !== 'string' ||
-        instanceOfChoice(object.choices[i])
+        typeof object.choices[i] !== 'string' &&
+        !instanceOfChoice(object.choices[i])
       ) {
         return false;
       }
@@ -97,7 +98,7 @@ const parseStepsToImport = ({
       if (!instanceOfStepToImport(stepToImport)) {
         return;
       }
-      const description = stepToImport.description?.slice(0, -1);
+      const description = removeNewlineAtEnd(stepToImport.description);
       if (isFirst && !!visible) {
         let choices: Choices | undefined;
         if (stepToImport.choices && Array.isArray(stepToImport.choices)) {
@@ -105,7 +106,8 @@ const parseStepsToImport = ({
             if (typeof choice === 'string') {
               obj[choice] = { id: choice };
             } else {
-              obj[choice.id] = choice;
+              obj[choice.id] = { ...choice };
+              obj[choice.id].notes = removeNewlineAtEnd(choice.notes);
             }
             return obj;
           }, {});

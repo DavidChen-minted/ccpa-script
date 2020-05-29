@@ -7,8 +7,8 @@ const sectionTitleStyles = (expanded = true) => css`
   color: ${expanded ? 'black' : 'gray'};
   font-size: ${rem(20)};
   text-align: center;
-  font-family: inherent;
-  font-weight: bold;
+  font-family: inherit;
+  text-transform: uppercase;
   cursor: pointer;
   margin: ${rem(10)} auto;
   ${transition()('left')};

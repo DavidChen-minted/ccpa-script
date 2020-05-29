@@ -16,7 +16,7 @@ const contentTableItemStyles = (visible = false, selected = false) => css`
 
   ${visible &&
   `
-    font-family: inherent;
+    font-family: inherit;
     text-align: left;
     color: blue;
     cursor: pointer;

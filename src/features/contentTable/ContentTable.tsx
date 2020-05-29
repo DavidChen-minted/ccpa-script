@@ -69,7 +69,7 @@ const ContentTable: FC = () => {
             setExpanded(false);
           }}
         >
-          {`content table \u25C0`}
+          {`Steps \u25C0`}
         </button>
       </div>
       <BreakLine />

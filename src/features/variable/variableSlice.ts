@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import removeNewlineAtEnd from 'utils/common/removeNewlineAtEnd';
 import variableAdapter, { Variable } from './variableEntity';
 
 export interface VariablesToImport {
@@ -25,10 +26,10 @@ const variableSlice = createSlice({
       }
       const parsedVariables = Object.entries(variablesToImport).map(
         ([id, value]) => {
-          const description = value?.description?.slice(0, -1);
+          const description = removeNewlineAtEnd(value?.description) ?? '';
           return {
             id,
-            description: description ?? '',
+            description,
           };
         }
       );
