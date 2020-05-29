@@ -13,6 +13,7 @@ import { selectChoiceControl } from 'features/choiceControl/selector';
 import stepAdapter from 'features/step/stepEntity';
 import { getNextVisibleStepId } from 'features/step/getStepId';
 import { changeCurrentStepId } from 'features/step/stepSlice';
+import { upsertNotes, removeNotes } from 'features/notes/notesSlice';
 import ChoiceButton from './ChoiceButton';
 
 const {
@@ -31,11 +32,17 @@ const ChoiceButtons: FC = () => {
   );
   const ids = useSelector(selectStepIds);
   const entities = useSelector(selectStepEntities);
+
   const dispatch = useDispatch();
   const handleClick = useCallback(
-    (choiceId: string) => {
+    (choiceId: string, notes?: string) => {
       if (stepId) {
         dispatch(updateSelectedChoiceId({ stepId, choiceId }));
+        if (notes) {
+          dispatch(upsertNotes({ id: stepId, notes }));
+        } else {
+          dispatch(removeNotes(stepId));
+        }
         const nextStepId = getNextVisibleStepId({
           ids,
           entities,
@@ -49,8 +56,12 @@ const ChoiceButtons: FC = () => {
     [
       stepId,
       dispatch,
-      updateSelectedChoiceId,
       getNextVisibleStepId,
+      ids,
+      entities,
+      updateSelectedChoiceId,
+      upsertNotes,
+      removeNotes,
       changeCurrentStepId,
     ]
   );

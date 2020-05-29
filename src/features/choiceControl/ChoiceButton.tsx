@@ -7,7 +7,7 @@ import constants from 'styles/constants';
 interface Props {
   choice: Choice;
   selected?: boolean;
-  onClick?: (id: string) => void;
+  onClick?: (id: string, notes?: string) => void;
 }
 
 const choiceButtonRowStyles = css`
@@ -57,7 +57,7 @@ const radioCharacterStyles = (selected = false) => css`
 const ChoiceButton: FC<Props> = ({ choice, selected = false, onClick }) => {
   const handleClick = () => {
     if (onClick) {
-      onClick(choice.id);
+      onClick(choice.id, choice.notes);
     }
   };
   return (
