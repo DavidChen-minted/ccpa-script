@@ -17,7 +17,11 @@
     "type": "git",
     "url": "git+https://github.com/DavidChen-minted/script-display.git"
   },
-  "keywords": ["database", "script", "yaml"],
+  "keywords": [
+    "database",
+    "script",
+    "yaml"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
