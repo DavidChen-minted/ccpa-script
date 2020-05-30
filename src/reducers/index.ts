@@ -7,6 +7,7 @@ import choiceControl from 'features/choiceControl/choiceControlSlice';
 import step from 'features/step/stepSlice';
 import databaseScript from 'features/databaseScript/databaseScriptSlice';
 import notes from 'features/notes/notesSlice';
+import scriptResult from 'features/scriptResult/scriptResultSlice';
 
 const rootReducer = combineReducers({
   scriptSnippet,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   step,
   databaseScript,
   notes,
+  scriptResult,
 });
 
 export default rootReducer;

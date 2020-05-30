@@ -20,10 +20,10 @@ const notesSlice = createSlice({
 
 export default notesSlice.reducer;
 
-export type VariableState = ReturnType<typeof notesSlice['reducer']>;
+export type NotesState = ReturnType<typeof notesSlice['reducer']>;
 
-export interface GlobalVariableState {
-  notes: VariableState;
+export interface GlobalNotesState {
+  notes: NotesState;
 }
 
 export const { notesReceived, upsertNotes, removeNotes } = notesSlice.actions;

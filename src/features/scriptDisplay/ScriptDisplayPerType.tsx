@@ -20,7 +20,7 @@ const gridPositionStyles = (row = 1, col = 1) => css`
 
 const scriptTypeStyles = css`
   font-size: ${rem(18)};
-  font-weight: bold;
+  font-style: italic;
 `;
 
 const scriptDescriptionStyles = css`

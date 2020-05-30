@@ -16,6 +16,7 @@ const scriptDisplayStyles = (numCol = 1) => css`
   grid-template-rows: repeat(3, auto);
   justify-items: stretch;
   column-gap: ${rem(15)};
+  row-gap: ${rem(5)};
 `;
 
 const { selectAll: selectAllVariables } = variableAdapter.getSelectors(

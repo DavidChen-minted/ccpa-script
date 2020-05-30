@@ -6,6 +6,7 @@ import sectionTitleStyles, {
   hoverLeftStyles,
 } from 'styles/sectionTitleStyles';
 import BreakLine from 'styles/BreakLine';
+import ResultSelect from './ResultSelect';
 
 const expandedScriptResultStyles = css`
   max-width: ${rem(500)};
@@ -34,8 +35,8 @@ const ScriptResult: FC = () => {
           {`\u25B6 result`}
         </button>
       </div>
-
       <BreakLine />
+      <ResultSelect />
     </div>
   ) : (
     <div css={unexpandedScriptResultStyles}>
