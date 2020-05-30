@@ -39,7 +39,7 @@ const ChoiceButtons: FC = () => {
       if (stepId) {
         dispatch(updateSelectedChoiceId({ stepId, choiceId }));
         if (notes) {
-          dispatch(upsertNotes({ id: stepId, notes }));
+          dispatch(upsertNotes({ stepId, notes }));
         } else {
           dispatch(removeNotes(stepId));
         }

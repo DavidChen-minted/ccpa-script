@@ -117,7 +117,7 @@ const parseStepsToImport = ({
             no: { id: 'no' },
           };
         }
-        choiceControl.push({ id, choices });
+        choiceControl.push({ stepId: id, choices });
       }
       parsedSteps[scriptType].push({
         id,

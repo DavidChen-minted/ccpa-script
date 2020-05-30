@@ -2,12 +2,12 @@ import { createEntityAdapter } from '@reduxjs/toolkit';
 
 export interface Notes {
   notes: string;
-  id: string;
+  stepId: string;
 }
 
 const notesAdapter = createEntityAdapter<Notes>({
-  selectId: (notes) => notes.id,
-  sortComparer: (a, b) => a.id.localeCompare(b.id),
+  selectId: (notes) => notes.stepId,
+  sortComparer: (a, b) => a.stepId.localeCompare(b.stepId),
 });
 
 export default notesAdapter;

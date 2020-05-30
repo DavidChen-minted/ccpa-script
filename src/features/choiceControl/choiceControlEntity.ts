@@ -11,7 +11,7 @@ export interface Choices {
 }
 
 export interface ChoiceControl {
-  id: string;
+  stepId: string;
   choices: Choices;
   selectedChoiceId?: string | null;
 }
@@ -32,7 +32,7 @@ export const instanceOfChoice = (object: any): object is Choice => {
 };
 
 const stepAdapter = createEntityAdapter<ChoiceControl>({
-  selectId: (choiceControl) => choiceControl.id,
+  selectId: (choiceControl) => choiceControl.stepId,
 });
 
 export default stepAdapter;

@@ -51,7 +51,7 @@ const ResultSelect: FC = () => {
       {selection === 'notes' ? (
         <div>
           {notes.map((note, index) => (
-            <div key={`notes-${note.id}`} css={notesMessageStyles}>
+            <div key={`notes-${note.stepId}`} css={notesMessageStyles}>
               {`${index + 1}. ${note.notes}`}
             </div>
           ))}
