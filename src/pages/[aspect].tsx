@@ -22,7 +22,7 @@ const AspectPage: NextPage<Props> = ({ yamlData, aspect }) => {
 
   return (
     <main>
-      <h1 css={pageTitleStyles}>{`${aspect} CCPA script`}</h1>
+      <h1 css={pageTitleStyles}>{`${aspect} script`}</h1>
       <MainPanel />
     </main>
   );

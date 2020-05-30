@@ -6,7 +6,7 @@ import MainPanel from 'features/mainPanel/MainPanel';
 
 const IndexPage: NextPage<{ [key in string]?: string }> = () => (
   <main>
-    <h1 css={pageTitleStyles}>CCPA Script</h1>
+    <h1 css={pageTitleStyles}>Script</h1>
     <YamlParser />
     <MainPanel />
   </main>
