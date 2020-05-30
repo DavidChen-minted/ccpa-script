@@ -1,9 +1,10 @@
 import React, { FC, useState, useMemo, ChangeEvent } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { css } from '@emotion/core';
 import rem from 'utils/style/rem';
 import { selectNotes } from 'features/notes/selector';
 import notesAdapter from 'features/notes/notesEntity';
+import { changeCurrentStepId } from 'features/step/stepSlice';
 import { selectScriptResult } from './selector';
 import scriptResultAdapter from './scriptResultEntity';
 
@@ -19,6 +20,12 @@ const selectStyles = css`
 const notesMessageStyles = css`
   font-size: ${rem(16)};
   margin: ${rem(5)};
+  text-align: left;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    color: blue;
+  }
 `;
 
 const { selectIds: selectScriptResultIds } = scriptResultAdapter.getSelectors(
@@ -37,6 +44,10 @@ const ResultSelect: FC = () => {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelection(e.target.value);
   };
+  const dispatch = useDispatch();
+  const handleNotesMessageClick = (stepId: string) => () => {
+    dispatch(changeCurrentStepId(stepId));
+  };
   return (
     <div>
       <div>
@@ -51,9 +62,14 @@ const ResultSelect: FC = () => {
       {selection === 'notes' ? (
         <div>
           {notes.map((note, index) => (
-            <div key={`notes-${note.stepId}`} css={notesMessageStyles}>
+            <button
+              type="button"
+              key={`notes-${note.stepId}`}
+              css={notesMessageStyles}
+              onClick={handleNotesMessageClick(note.stepId)}
+            >
               {`${index + 1}. ${note.notes}`}
-            </div>
+            </button>
           ))}
         </div>
       ) : (
