@@ -99,7 +99,7 @@ steps:
   - id: minted_order_digital
     check:
       dependency:
-        id: minted_order_complete
+        stepId: minted_order_complete
         choice: yes
         type: check
       description: >

@@ -50,12 +50,16 @@ const databaseScriptSlice = createSlice({
     },
     updateScript: (
       state,
-      action: PayloadAction<{ id: string; scriptType: string; script: string }>
+      action: PayloadAction<{
+        stepId: string;
+        scriptType: string;
+        script: string;
+      }>
     ) => {
-      const { id, scriptType, script } = action.payload;
-      if (id && scriptType) {
+      const { stepId, scriptType, script } = action.payload;
+      if (stepId && scriptType) {
         databaseScriptAdapter.updateOne(state.scripts[scriptType], {
-          id,
+          id: stepId,
           changes: { script },
         });
       }

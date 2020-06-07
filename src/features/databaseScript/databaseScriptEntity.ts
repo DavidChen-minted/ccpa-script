@@ -1,7 +1,7 @@
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 
 export interface DatabaseScript {
-  id: string;
+  stepId: string;
   scriptType: string;
   script?: string;
   description?: string;
@@ -12,7 +12,7 @@ export interface DatabaseScript {
 export type databaseScriptEntityState = EntityState<DatabaseScript>;
 
 const databaseScriptAdapter = createEntityAdapter<DatabaseScript>({
-  selectId: (databaseScript) => databaseScript.id,
+  selectId: (databaseScript) => databaseScript.stepId,
 });
 
 export default databaseScriptAdapter;

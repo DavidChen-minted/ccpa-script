@@ -36,13 +36,13 @@ const ScriptDisplay: FC = () => {
   }, [currentStepId, allScripts]);
   const dispatch = useDispatch();
   const handleChangeClick = ({
-    id,
+    stepId,
     scriptType,
   }: {
-    id: string;
+    stepId: string;
     scriptType: string;
   }) => (script: string) => {
-    dispatch(updateScript({ id, scriptType, script }));
+    dispatch(updateScript({ stepId, scriptType, script }));
   };
   const variables = useSelector(selectAllVariables);
   const handleReplaceClick = (script: string) =>
@@ -52,7 +52,7 @@ const ScriptDisplay: FC = () => {
     <div css={scriptDisplayStyles(scripts?.length)}>
       {scripts?.map((s, index) => {
         const {
-          id = '',
+          stepId = '',
           db = '',
           script = '',
           scriptType = '',
@@ -60,13 +60,13 @@ const ScriptDisplay: FC = () => {
         } = s || {};
         return (
           <ScriptDisplayPerType
-            key={`script-${index}-${id}-${scriptType}`}
+            key={`script-${index}-${stepId}-${scriptType}`}
             col={index + 1}
             db={db}
             description={description}
             script={script}
             scriptType={scriptType}
-            onChangeClick={handleChangeClick({ id, scriptType })}
+            onChangeClick={handleChangeClick({ stepId, scriptType })}
             onReplaceClick={handleReplaceClick}
           />
         );
