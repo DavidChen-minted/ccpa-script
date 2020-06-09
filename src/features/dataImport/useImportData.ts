@@ -21,7 +21,10 @@ import { importChoiceControl } from 'features/choiceControl/choiceControlSlice';
 import { importParsedDatabaseScripts } from 'features/databaseScript/databaseScriptSlice';
 import layoutScriptResult from 'features/scriptResult/layoutScriptResult';
 import { scriptResultReceived } from 'features/scriptResult/scriptResultSlice';
-import { importParsedDependencyChecks } from 'features/dependency/dependencyCheckSlice';
+import {
+  importParsedDependencyChecks,
+  resolveAllDependency,
+} from 'features/dependency/dependencyCheckSlice';
 import parseStepsToImport, { StepsToImport } from './parseStepsToImport';
 
 interface DataToImport {
@@ -73,6 +76,7 @@ const useImportData = (dataToImport?: DataToImport) => {
         types: scriptTypes,
       })
     );
+    dispatch(resolveAllDependency(scriptTypes));
   }, [dataToImport]);
 };
 
