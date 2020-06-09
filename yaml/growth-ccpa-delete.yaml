@@ -1,3 +1,4 @@
+# steps to check
 steps:
   - id: begin
     check:
@@ -298,16 +299,6 @@ steps:
           - set_user_id_var
           - find_di_event_id
           - find_event_id_in_di_host_test_email
-  # - id: di_media_join_di_event
-  #   check:
-  #     description: >
-  #       check if the event id is in di_media table in DI DB
-  #     script:
-  #       db: di
-  #       snippets:
-  #         - set_user_id_var
-  #         - find_di_event_id
-  #         - find_event_id_in_di_host_test_email
   - id: di_media
     check:
       description: >
@@ -336,16 +327,22 @@ steps:
         snippets:
           - set_email_like_var
           - find_email_in_job
+
+# script types
 types:
   - check
   - delete
   - Validation
+
+# script database
 db:
   - drupal
   - sessions
   - di
   - jobs
   - di_jobs
+
+# variables to replace
 vars:
   email:
     description: >
@@ -362,6 +359,8 @@ vars:
   textPlaceholder:
     description: >
       placeholder to replace text reference
+
+# database sql snippets
 snippets:
   set_email_var: |
     set @email = "{{email}}";
@@ -516,42 +515,6 @@ snippets:
     select * 
     from di_host_test_email
     where di_event_id = @dieventid;
-  # find_di_media_join_di_event: |
-  #   select * 
-  #   from di_event de
-  #   inner join di_media dm
-  #   on de.rendered_card_media_id = dm.id
-  #   where de.id = @dieventid;
-  # find_di_media_join_di_host_test_email_1: |
-  #   select * 
-  #   from di_host_test_email dhte
-  #   inner join di_media dm
-  #   on dhte.rendered_card_media_id = dm.id
-  #   where di_event_id = @dieventid;
-  # find_di_media_join_di_host_test_email_2: |
-  #   select * 
-  #   from di_host_test_email dhte
-  #   inner join di_media dm
-  #   on dhte.rendered_text_media_id = dm.id
-  #   where di_event_id = @dieventid;
-  # find_di_media_join_di_host_test_email_3: |
-  #   select * 
-  #   from di_host_test_email dhte
-  #   inner join di_media dm
-  #   on dhte.rendered_email_composite_media_id = dm.id
-  #   where di_event_id = @dieventid;
-  # find_di_media_join_di_invitation_1: |
-  #   select * 
-  #   from di_invitation di
-  #   inner join di_media dm
-  #   on di.rendered_text_media_id = dm.id
-  #   where di_event_id = @dieventid;
-  # find_di_media_join_di_invitation_2: |
-  #   select * 
-  #   from di_invitation di
-  #   inner join di_media dm
-  #   on di.rendered_email_composite_media_id = dm.id
-  #   where di_event_id = @dieventid
   find_di_media: |
     (select dm.* 
     from di_event de
