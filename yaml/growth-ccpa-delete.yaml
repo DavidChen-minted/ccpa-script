@@ -9,7 +9,7 @@ steps:
       script:
         db: drupal
         snippets:
-          - set_request_number
+          - set_request_number_var
           - set_user_id_var
           - compose_email_placeholder
           - compose_text_placeholder
@@ -85,7 +85,7 @@ steps:
         snippets:
           - set_user_id_var
           - find_minted_order_incomplete
-  - id: minted_order_complete
+  - id: minted_order_complete_within_3_months
     check:
       description: >
         check if the user id is in minted_order table in bidata DB and 
@@ -95,11 +95,11 @@ steps:
         db: drupal
         snippets:
           - set_user_id_var
-          - find_minted_order_complete
+          - find_minted_order_complete_within_3_months
   - id: minted_order_digital
     check:
       dependency:
-        stepId: minted_order_complete
+        stepId: minted_order_complete_within_3_months
         choice: yes
         type: check
       description: >
@@ -114,7 +114,228 @@ steps:
         snippets:
           - set_user_id_var
           - find_minted_order_digital
-  
+  - id: minted_order_complete_3_months_before
+    check:
+      description: >
+        check if the user id is in minted_order table in bidata DB and order has been placed, completed, 
+        and passed the return policy, 3 months after purchase
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_minted_order_complete_3_months_before
+  - id: minted_order_line_item
+    check:
+      description: >
+        check if the user id is in minted_order_line_item table in bidata DB
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_minted_order_line_item
+  - id: price_adjustment_note
+    check:
+      description: >
+        check if the user id is in price_adjustment_note table in bidata DB
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_price_adjustment_note
+  - id: payment_information
+    check:
+      description: >
+        check if the user id is in payment_information table in bidata DB
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_payment_information
+  - id: minted_address
+    check:
+      description: >
+        check if the user id is in minted_address table in bidata DB
+      script:
+        db: drupal
+        snippets:
+          - set_user_id_var
+          - find_minted_address
+  - id: di_unsubscribe_as_host
+    check:
+      description: >
+        check if the email is in di_unsubscribe table in DI DB as a host
+      script:
+        db: di
+        snippets:
+          - set_email_var_unicode
+          - find_di_unsubscribe_host
+          - show_di_unsubscribe_host_id
+  - id: di_unsubscribe_as_guest
+    check:
+      description: >
+        check if the email is in di_unsubscribe table in DI DB as a guest
+      script:
+        db: di
+        snippets:
+          - set_email_var_unicode
+          - find_di_unsubscribe_guest
+          - show_di_unsubscribe_guest_id
+  - id: di_invitation
+    check:
+      description: >
+        check if the invitation id is in di_invitation table in DI DB as a guest
+      script:
+        db: di
+        snippets:
+          - set_email_var_unicode
+          - find_di_invitation_id
+          - find_di_invitation
+  - id: di_event_poll_question_response
+    check:
+      description: >
+        check if the invitation id is in di_event_poll_question_response table in DI DB as a guest
+      script:
+        db: di
+        snippets:
+          - set_email_var_unicode
+          - find_di_invitation_id
+          - find_di_event_poll_question_response
+  - id: email_in_di_host_test_email
+    check:
+      description: >
+        check if the email is in di_host_test_email table in DI DB
+      script:
+        db: di
+        snippets:
+          - set_email_var_unicode
+          - find_email_in_di_host_test_email
+  - id: di_email_as_guest
+    check:
+      description: >
+        check if the event id is in di_email table in DI DB as a guest
+      script:
+        db: di
+        snippets:
+          - set_email_var_unicode
+          - find_di_email_guest
+  - id: di_email_as_host
+    check:
+      description: >
+        check if the event id is in di_email table in DI DB as a host
+      script:
+        db: di
+        snippets:
+          - set_email_var_unicode
+          - find_di_event_id
+          - find_di_email_host
+  - id: di_event_as_host
+    check:
+      description: >
+        check if the user id is in di_event table in DI DB as a host
+      script:
+        db: di
+        snippets:
+          - set_user_id_var
+          - find_di_event_id
+          - find_di_event
+  - id: di_event_attribute
+    check:
+      description: >
+        check if the event id is in di_event_attribute table in DI DB
+      script:
+        db: di
+        snippets:
+          - set_user_id_var
+          - find_di_event_id
+          - find_di_event_attribute
+  - id: di_event_comment
+    check:
+      description: >
+        check if the event id is in di_event_comment table in DI DB
+      script:
+        db: di
+        snippets:
+          - set_user_id_var
+          - find_di_event_id
+          - find_di_event_comment
+  - id: di_event_message
+    check:
+      description: >
+        check if the event id is in di_event_message table in DI DB
+      script:
+        db: di
+        snippets:
+          - set_user_id_var
+          - find_di_event_id
+          - find_di_event_message
+  - id: di_event_poll_question
+    check:
+      description: >
+        check if the event id is in di_event_poll_question table in DI DB
+      script:
+        db: di
+        snippets:
+          - set_user_id_var
+          - find_di_event_id
+          - find_di_event_poll_question
+  - id: di_event_update_event
+    check:
+      description: >
+        check if the event id is in di_event_update_event table in DI DB
+      script:
+        db: di
+        snippets:
+          - set_user_id_var
+          - find_di_event_id
+          - find_di_event_update_event
+  - id: event_id_in_di_host_test_email
+    check:
+      description: >
+        check if the event id is in di_host_test_email table in DI DB
+      script:
+        db: di
+        snippets:
+          - set_user_id_var
+          - find_di_event_id
+          - find_event_id_in_di_host_test_email
+  # - id: di_media_join_di_event
+  #   check:
+  #     description: >
+  #       check if the event id is in di_media table in DI DB
+  #     script:
+  #       db: di
+  #       snippets:
+  #         - set_user_id_var
+  #         - find_di_event_id
+  #         - find_event_id_in_di_host_test_email
+  - id: di_media
+    check:
+      description: >
+        check if the event id is in di_media table in DI DB
+      script:
+        db: di
+        snippets:
+          - set_user_id_var
+          - find_di_event_id
+          - find_di_media
+  - id: transactional_email
+    check:
+      description: >
+        check if the email is in transactional email jobs table
+      script:
+        db: jobs
+        snippets:
+          - set_email_like_var
+          - find_email_in_job
+  - id: di_jobs
+    check:
+      description: >
+        check if the email is in DI jobs table
+      script:
+        db: di_jobs
+        snippets:
+          - set_email_like_var
+          - find_email_in_job
 types:
   - check
   - delete
@@ -143,13 +364,17 @@ vars:
       placeholder to replace text reference
 snippets:
   set_email_var: |
-    set @email = {{email}};
+    set @email = "{{email}}";
+  set_email_var_unicode: |
+    set @email = "{{email}}" COLLATE utf8_unicode_ci;
+  set_email_like_var: |
+    set @email = "%{{email}}%";
   find_user_id: |
     select uid into @UID from users where mail = @email;
   show_user_id: |
     select @UID;
-  set_request_number: |
-    set @requestnumber = {{requestNumber}};
+  set_request_number_var: |
+    set @requestnumber = "{{requestNumber}}";
   set_user_id_var: |
     set @UID = {{userId}};
   compose_email_placeholder: |
@@ -183,7 +408,7 @@ snippets:
     where owner_id = @UID
     and is_placed = 1
     and minted_state_diagram_state_id <> 150;
-  find_minted_order_complete: |
+  find_minted_order_complete_within_3_months: |
     select *
     from minted_order
     where owner_id = @UID
@@ -200,3 +425,169 @@ snippets:
     and is_placed = 1
     and minted_state_diagram_state_id = 150
     and date_add(order_placement_date, interval 3 month) >= now();
+  find_minted_order_complete_3_months_before: |
+    select *
+    from minted_order
+    where owner_id = @UID
+    and 
+    ((is_placed = 1
+    and minted_state_diagram_state_id = 150
+    and date_add(order_placement_date, interval 3 month) < now())
+    or (is_placed = 0));
+  find_minted_order_line_item: |
+    select * from minted_order_line_item moli
+    inner join minted_order mo
+    on moli.minted_order_id = mo.id
+    where owner_id = @UID
+    and
+    ((is_placed = 1
+    and minted_state_diagram_state_id = 150
+    and date_add(order_placement_date, interval 3 month) < now())
+    or (is_placed = 0));
+  find_price_adjustment_note: |
+    select * from minted_order mo
+    inner join price_adjustment_note pan
+    on mo.id = pan.order_id
+    where owner_id = @UID;
+  find_payment_information: |
+    select * from payment_information where user_id = @UID;
+  find_minted_address: |
+    select * from minted_address where user_id = @UID;
+  find_di_unsubscribe_host: |
+    select id into @diunsubscribehostid
+    from di_unsubscribe
+    where host_email = @email;
+  show_di_unsubscribe_host_id: |
+    select @diunsubscribehostid;
+  find_di_unsubscribe_guest: |
+    select id into @diunsubscribeguestid
+    from di_unsubscribe
+    where guest_email = @email;
+  show_di_unsubscribe_guest_id: |
+    select @diunsubscribeguestid;
+  find_di_invitation_id: |
+    select id into @diinvitationid
+    from di_invitation where email = @email;
+  find_di_invitation: |
+    select * from di_invitation where id = @diinvitationid;
+  find_di_event_poll_question_response: |
+    select * 
+    from di_event_poll_question_response
+    where di_invitation_id = @diinvitationid;
+  find_email_in_di_host_test_email: |
+    select * 
+    from di_host_test_email
+    where email_address = @email;
+  find_di_email_guest: |
+    select *
+    from di_email
+    where email = @email;
+  find_di_event_id: |
+    select id into @dieventid
+    from di_event 
+    where creator_user_id = @UID;
+  find_di_event: |
+    select * from di_event where id = @dieventid;
+  find_di_email_host: |
+    select *
+    from di_email
+    where di_event_id = @dieventid;
+  find_di_event_attribute: |
+    select * 
+    from di_event_attribute
+    where di_event_id = @dieventid;
+  find_di_event_comment: |
+    select * 
+    from di_event_comment
+    where di_event_id = @dieventid;
+  find_di_event_message: |
+    select * 
+    from di_event_message
+    where di_event_id = @dieventid;
+  find_di_event_poll_question: |
+    select * 
+    from di_event_poll_question
+    where di_event_id = @dieventid;
+  find_di_event_update_event: |
+    select * 
+    from di_event_update_event
+    where di_event_id = @dieventid;
+  find_event_id_in_di_host_test_email: |
+    select * 
+    from di_host_test_email
+    where di_event_id = @dieventid;
+  # find_di_media_join_di_event: |
+  #   select * 
+  #   from di_event de
+  #   inner join di_media dm
+  #   on de.rendered_card_media_id = dm.id
+  #   where de.id = @dieventid;
+  # find_di_media_join_di_host_test_email_1: |
+  #   select * 
+  #   from di_host_test_email dhte
+  #   inner join di_media dm
+  #   on dhte.rendered_card_media_id = dm.id
+  #   where di_event_id = @dieventid;
+  # find_di_media_join_di_host_test_email_2: |
+  #   select * 
+  #   from di_host_test_email dhte
+  #   inner join di_media dm
+  #   on dhte.rendered_text_media_id = dm.id
+  #   where di_event_id = @dieventid;
+  # find_di_media_join_di_host_test_email_3: |
+  #   select * 
+  #   from di_host_test_email dhte
+  #   inner join di_media dm
+  #   on dhte.rendered_email_composite_media_id = dm.id
+  #   where di_event_id = @dieventid;
+  # find_di_media_join_di_invitation_1: |
+  #   select * 
+  #   from di_invitation di
+  #   inner join di_media dm
+  #   on di.rendered_text_media_id = dm.id
+  #   where di_event_id = @dieventid;
+  # find_di_media_join_di_invitation_2: |
+  #   select * 
+  #   from di_invitation di
+  #   inner join di_media dm
+  #   on di.rendered_email_composite_media_id = dm.id
+  #   where di_event_id = @dieventid
+  find_di_media: |
+    (select dm.* 
+    from di_event de
+    inner join di_media dm
+    on de.rendered_card_media_id = dm.id
+    where de.id = @dieventid)
+    union
+    (select dm.* 
+    from di_host_test_email dhte
+    inner join di_media dm
+    on dhte.rendered_card_media_id = dm.id
+    where di_event_id = @dieventid)
+    union
+    (select dm.* 
+    from di_host_test_email dhte
+    inner join di_media dm
+    on dhte.rendered_text_media_id = dm.id
+    where di_event_id = @dieventid)
+    union
+    (select dm.* 
+    from di_host_test_email dhte
+    inner join di_media dm
+    on dhte.rendered_email_composite_media_id = dm.id
+    where di_event_id = @dieventid)
+    union
+    (select dm.* 
+    from di_invitation di
+    inner join di_media dm
+    on di.rendered_text_media_id = dm.id
+    where di_event_id = @dieventid)
+    union
+    (select dm.* 
+    from di_invitation di
+    inner join di_media dm
+    on di.rendered_email_composite_media_id = dm.id
+    where di_event_id = @dieventid);
+  find_email_in_job: |
+    select * from job 
+    where arguments like @email;
