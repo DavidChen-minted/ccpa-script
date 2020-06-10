@@ -1,12 +1,20 @@
 # steps to check
 steps:
-  - id: begin
+  - id: begin_drupal
     check:
       script:
         db: drupal
         snippets:
             - set_email_var
     delete:
+      script:
+        db: drupal
+        snippets:
+          - set_request_number_var
+          - set_user_id_var
+          - compose_email_placeholder
+          - compose_text_placeholder
+    validation:
       script:
         db: drupal
         snippets:
@@ -31,6 +39,13 @@ steps:
         db: drupal
         snippets:
           - update_placeholder_in_users
+    validation:
+      description: >
+        create sql to verify "deletions" in users
+      script:
+        db: drupal
+        snippets:
+          - validate_users_placeholder
   - id: sessions
     check:
       description: >
@@ -40,6 +55,13 @@ steps:
         snippets:
           - set_user_id_var
           - find_sessions
+    delete:
+      description: >
+        create sql to delete rows in sessions table
+      script:
+        db: sessions
+        snippets:
+          - delete_sessions
   - id: friend_email
     check:
       description: >
@@ -48,8 +70,21 @@ steps:
         db: drupal
         snippets:
           - set_email_var
-          - find_friend_email_id
-          - find_friend_email
+          - find_friend_email_id_list
+    delete:
+      description: >
+        create sql to "delete" in friend_email
+      script:
+        db: drupal
+        snippets:
+          - update_placeholder_in_friend_email
+    validation:
+      description: >
+        create sql to verify "deletion" in friend_email
+      script:
+        db: drupal
+        snippets:
+          - validate_friend_email_placeholder
   - id: friend_address
     check:
       description: >
@@ -57,9 +92,6 @@ steps:
       script:
         db: drupal
         snippets:
-          - set_email_var
-          - find_friend_email_id
-          - find_friend_address_id
           - find_friend_address
   - id: minted_account
     check:
@@ -70,6 +102,20 @@ steps:
         snippets:
           - set_user_id_var
           - find_minted_account
+    delete:
+      description: >
+        create sql to "delete" in minted_account
+      script:
+        db: drupal
+        snippets:
+          - update_placeholder_in_minted_account
+    validation:
+      description: >
+        create sql to verify "deletion" in minted_account
+      script:
+        db: drupal
+        snippets:
+          - validate_minted_account_placeholder
   - id: minted_order_incomplete
     check:
       description: >
@@ -80,7 +126,7 @@ steps:
           notes: >
             TODO: We need to wait for the order to be completed 
             before we delete data
-        - id: no
+        - no
       script:
         db: drupal
         snippets:
@@ -106,7 +152,7 @@ steps:
       description: >
         check if the minted_order_line_item is digital
       choices:
-        - id: yes
+        - yes
         - id: no
           notes: >
             TODO: We need to wait for the return policy to pass before we delete data
@@ -125,6 +171,20 @@ steps:
         snippets:
           - set_user_id_var
           - find_minted_order_complete_3_months_before
+    delete:
+      description: >
+        create sql to "delete" in minted_order
+      script:
+        db: drupal
+        snippets:
+          - update_placeholder_in_minted_order
+    validation:
+      description: >
+        create sql to verify "deletion" in minted_order
+      script:
+        db: drupal
+        snippets:
+          - valdiate_minted_order_placeholder
   - id: minted_order_line_item
     check:
       description: >
@@ -134,6 +194,35 @@ steps:
         snippets:
           - set_user_id_var
           - find_minted_order_line_item
+    delete:
+      description: >
+        create sql to "delete" in minted_order_line_item
+      script:
+        db: drupal
+        snippets:
+          - update_placeholder_in_minted_order_line_item
+    validation:
+      description: >
+        create sql to verify "deletion" in minted_order_line_item
+      script:
+        db: drupal
+        snippets:
+          - validate_minted_order_line_item_placeholder
+  - id: thumbnail_in_minted_order_line_item
+    check:
+      description: >
+        check if updated_thumbnail_url is in minted_order_line_item
+      choices:
+        - id: yes
+          notes: >
+            TODO: Download the appropriate asset 
+            https://minted.atlassian.net/wiki/spaces/EN/pages/253427737/Taking+inventory+of+PII+and+preparing+for+CCPA+requests#Placeholder-assets 
+            Go to the appropriate bucket in S3 and file. Replace the file with the asset you just downloaded.
+        - no
+      script:
+        db: drupal
+        snippets:
+          - find_thumbnail_url_in_minted_order_line_item
   - id: price_adjustment_note
     check:
       description: >
@@ -143,6 +232,20 @@ steps:
         snippets:
           - set_user_id_var
           - find_price_adjustment_note
+    delete:
+      description: >
+        create sql to "delete" in price_adjustment_note only after all orders are completed and passed the return policy
+      script:
+        db: drupal
+        snippets:
+          - update_placeholder_in_price_adjustment_note
+    validation:
+      description: >
+        create sql to verify "deletion" in price_adjustment_note
+      script:
+        db: drupal
+        snippets:
+          - validate_price_adjustment_note_placeholder
   - id: payment_information
     check:
       description: >
@@ -152,6 +255,20 @@ steps:
         snippets:
           - set_user_id_var
           - find_payment_information
+    delete:
+      description: >
+        create sql to "delete" in payment_information only after all orders are completed and passed the return policy
+      script:
+        db: drupal
+        snippets:
+          - update_placeholder_in_payment_information
+    validation:
+      description: >
+        create sql to verify "deletion" in payment_information
+      script:
+        db: drupal
+        snippets:
+          - validate_payment_information_placeholder
   - id: minted_address
     check:
       description: >
@@ -161,6 +278,37 @@ steps:
         snippets:
           - set_user_id_var
           - find_minted_address
+    delete:
+      description: >
+        create sql to "delete" in minted_address only after all orders are completed and passed the return policy
+      script:
+        db: drupal
+        snippets:
+          - update_placeholder_in_minted_address
+      dependency:
+        stepId: minted_order_incomplete
+        choice: no
+        type: check
+    validation:
+      description: >
+        create sql to verify "deletion" in minted_address
+      script:
+        db: drupal
+        snippets:
+          - validate_minted_address_placeholder
+  - id: begin_di
+    check:
+      script:
+        db: di
+        snippets:
+            - set_email_var_unicode
+    delete:
+      script:
+        db: di
+        snippets:
+          - set_request_number_var
+          - compose_email_placeholder
+          - compose_text_placeholder
   - id: di_unsubscribe_as_host
     check:
       description: >
@@ -189,8 +337,21 @@ steps:
         db: di
         snippets:
           - set_email_var_unicode
-          - find_di_invitation_id
-          - find_di_invitation
+          - find_di_invitation_id_list
+    delete:
+      description: >
+        create sql to "delete" in di_invitation
+      script:
+        db: di
+        snippets:
+          - update_placeholder_in_di_invitation
+    validation:
+      description:
+        create sql to verify "deletion" in di_invitation in DI DB
+      script:
+        db: di
+        snippets:
+          - validate_di_invitation_placeholder
   - id: di_event_poll_question_response
     check:
       description: >
@@ -198,8 +359,6 @@ steps:
       script:
         db: di
         snippets:
-          - set_email_var_unicode
-          - find_di_invitation_id
           - find_di_event_poll_question_response
   - id: email_in_di_host_test_email
     check:
@@ -218,17 +377,21 @@ steps:
         db: di
         snippets:
           - set_email_var_unicode
-          - find_di_email_guest
-  - id: di_email_as_host
-    check:
+          - find_di_email_id_list_guest
+    delete:
       description: >
-        check if the event id is in di_email table in DI DB as a host
+        create sql to delete from di_email as a guest
       script:
         db: di
         snippets:
-          - set_email_var_unicode
-          - find_di_event_id
-          - find_di_email_host
+          - delete_di_email_as_guest
+    validation:
+      description: >
+        create sql to verify deletion in di_email in DI DB
+      script:
+        db: di
+        snippets:
+          - validate_di_email_as_guest_deletion
   - id: di_event_as_host
     check:
       description: >
@@ -237,8 +400,15 @@ steps:
         db: di
         snippets:
           - set_user_id_var
-          - find_di_event_id
-          - find_di_event
+          - find_di_event_id_list
+  - id: di_email_as_host
+    check:
+      description: >
+        check if the event id is in di_email table in DI DB as a host
+      script:
+        db: di
+        snippets:
+          - find_di_email_host
   - id: di_event_attribute
     check:
       description: >
@@ -246,8 +416,6 @@ steps:
       script:
         db: di
         snippets:
-          - set_user_id_var
-          - find_di_event_id
           - find_di_event_attribute
   - id: di_event_comment
     check:
@@ -256,8 +424,6 @@ steps:
       script:
         db: di
         snippets:
-          - set_user_id_var
-          - find_di_event_id
           - find_di_event_comment
   - id: di_event_message
     check:
@@ -266,8 +432,6 @@ steps:
       script:
         db: di
         snippets:
-          - set_user_id_var
-          - find_di_event_id
           - find_di_event_message
   - id: di_event_poll_question
     check:
@@ -276,8 +440,6 @@ steps:
       script:
         db: di
         snippets:
-          - set_user_id_var
-          - find_di_event_id
           - find_di_event_poll_question
   - id: di_event_update_event
     check:
@@ -286,8 +448,6 @@ steps:
       script:
         db: di
         snippets:
-          - set_user_id_var
-          - find_di_event_id
           - find_di_event_update_event
   - id: event_id_in_di_host_test_email
     check:
@@ -296,8 +456,6 @@ steps:
       script:
         db: di
         snippets:
-          - set_user_id_var
-          - find_di_event_id
           - find_event_id_in_di_host_test_email
   - id: di_media
     check:
@@ -306,8 +464,6 @@ steps:
       script:
         db: di
         snippets:
-          - set_user_id_var
-          - find_di_event_id
           - find_di_media
   - id: transactional_email
     check:
@@ -317,7 +473,14 @@ steps:
         db: jobs
         snippets:
           - set_email_like_var
-          - find_email_in_job
+          - find_job_id_for_email_in_job
+    delete:
+      description: >
+        create sql to delete from jobs table
+      script:
+        db: jobs
+        snippets:
+          - delete_job_for_job_id_in_jobs
   - id: di_jobs
     check:
       description: >
@@ -326,13 +489,20 @@ steps:
         db: di_jobs
         snippets:
           - set_email_like_var
-          - find_email_in_job
+          - find_job_id_for_email_in_job
+    delete:
+      description: >
+        create sql to delete from DI jobs table
+      script:
+        db: di_jobs
+        snippets:
+          - delete_job_for_job_id_in_di_jobs
 
 # script types
 types:
   - check
   - delete
-  - Validation
+  - validation
 
 # script database
 db:
@@ -353,12 +523,27 @@ vars:
   userId:
     description: >
       user id from the main drupal database
-  emailPlaceholder:
+  friendEmailIdList:
     description: >
-      placeholder to replace email reference
-  textPlaceholder:
+      friend email id list from the main drupal database
+  mintedOrderIdList:
     description: >
-      placeholder to replace text reference
+      minted order id list that is safe to modify
+  diEmailIdList:
+    description: >
+      di email id as guest list from di database
+  diInvitationIdList:
+    description: >
+      di invitation id list from di database
+  diEventIdList:
+    description: >
+      di event id list from di database
+  jobIdList:
+    description: >
+      job id list from transactional email job database
+  diJobIdList:
+    description: >
+      job id list from di email job database
 
 # database sql snippets
 snippets:
@@ -386,19 +571,18 @@ snippets:
     name = @textplaceholder,
     init = @textplaceholder,
     mail = @emailplaceholder,
-    pass = textplaceholder,
+    pass = @textplaceholder
     where uid = @UID;
   find_sessions: |
     select * from sessions where uid = @UID;
-  find_friend_email_id: |
-    select id into @friendemailid from friend_email where email = @email;
-  find_friend_email: |
-    select * from friend_email where id = @friendemailid;
-  find_friend_address_id: |
-    select friend_address_id into @friend_address_id
-    from friend_email where id = @friendemailid;
+  find_friend_email_id_list: |
+    select group_concat(id) from friend_email where email = @email;
   find_friend_address: |
-    select * from friend_address where id = @friendaddressid;
+    select * from friend_address 
+    where id in (
+      select friend_address_id from friend_email 
+      where id in ({{friendEmailIdList}})
+    );
   find_minted_account: |
     select * from minted_account where user_id = @UID;
   find_minted_order_incomplete: |
@@ -425,7 +609,7 @@ snippets:
     and minted_state_diagram_state_id = 150
     and date_add(order_placement_date, interval 3 month) >= now();
   find_minted_order_complete_3_months_before: |
-    select *
+    select group_concat(id)
     from minted_order
     where owner_id = @UID
     and 
@@ -464,93 +648,231 @@ snippets:
     where guest_email = @email;
   show_di_unsubscribe_guest_id: |
     select @diunsubscribeguestid;
-  find_di_invitation_id: |
-    select id into @diinvitationid
+  find_di_invitation_id_list: |
+    select group_concat(id)
     from di_invitation where email = @email;
-  find_di_invitation: |
-    select * from di_invitation where id = @diinvitationid;
+
   find_di_event_poll_question_response: |
     select * 
     from di_event_poll_question_response
-    where di_invitation_id = @diinvitationid;
+    where di_invitation_id in ({{diInvitationIdList}});
   find_email_in_di_host_test_email: |
     select * 
     from di_host_test_email
     where email_address = @email;
-  find_di_email_guest: |
-    select *
+  find_di_email_id_list_guest: |
+    select group_concat(id)
     from di_email
     where email = @email;
-  find_di_event_id: |
-    select id into @dieventid
-    from di_event 
+  find_di_event_id_list: |
+    select group_concat(id) from di_event 
     where creator_user_id = @UID;
-  find_di_event: |
-    select * from di_event where id = @dieventid;
   find_di_email_host: |
     select *
     from di_email
-    where di_event_id = @dieventid;
+    where di_event_id in ({{diEventIdList}});
   find_di_event_attribute: |
     select * 
     from di_event_attribute
-    where di_event_id = @dieventid;
+    where di_event_id in ({{diEventIdList}});
   find_di_event_comment: |
     select * 
     from di_event_comment
-    where di_event_id = @dieventid;
+    where di_event_id in ({{diEventIdList}});
   find_di_event_message: |
     select * 
     from di_event_message
-    where di_event_id = @dieventid;
+    where di_event_id in ({{diEventIdList}});
   find_di_event_poll_question: |
     select * 
     from di_event_poll_question
-    where di_event_id = @dieventid;
+    where di_event_id in ({{diEventIdList}});
   find_di_event_update_event: |
     select * 
     from di_event_update_event
-    where di_event_id = @dieventid;
+    where di_event_id in ({{diEventIdList}});
   find_event_id_in_di_host_test_email: |
     select * 
     from di_host_test_email
-    where di_event_id = @dieventid;
+    where di_event_id in ({{diEventIdList}});
   find_di_media: |
     (select dm.* 
     from di_event de
     inner join di_media dm
     on de.rendered_card_media_id = dm.id
-    where de.id = @dieventid)
+    where de.id in ({{diEventIdList}}))
     union
     (select dm.* 
     from di_host_test_email dhte
     inner join di_media dm
     on dhte.rendered_card_media_id = dm.id
-    where di_event_id = @dieventid)
+    where di_event_id in ({{diEventIdList}}))
     union
     (select dm.* 
     from di_host_test_email dhte
     inner join di_media dm
     on dhte.rendered_text_media_id = dm.id
-    where di_event_id = @dieventid)
+    where di_event_id in ({{diEventIdList}}))
     union
     (select dm.* 
     from di_host_test_email dhte
     inner join di_media dm
     on dhte.rendered_email_composite_media_id = dm.id
-    where di_event_id = @dieventid)
+    where di_event_id in ({{diEventIdList}}))
     union
     (select dm.* 
     from di_invitation di
     inner join di_media dm
     on di.rendered_text_media_id = dm.id
-    where di_event_id = @dieventid)
+    where di_event_id in ({{diEventIdList}}))
     union
     (select dm.* 
     from di_invitation di
     inner join di_media dm
     on di.rendered_email_composite_media_id = dm.id
-    where di_event_id = @dieventid);
-  find_email_in_job: |
-    select * from job 
+    where di_event_id in ({{diEventIdList}}));
+  find_job_id_for_email_in_job: |
+    select group_concat(id) from job 
     where arguments like @email;
+  delete_sessions: |
+    delete from sessions where uid = @UID;
+  update_placeholder_in_friend_email: |
+    update friend_email
+    set
+    display_name = @textplaceholder,
+    email = @emailplaceholder,
+    name = @textplaceholder
+    where id in ({{friendEmailIdList}});
+  update_placeholder_in_minted_account: |
+    update minted_account
+    set 
+    first_name = @textplaceholder,
+    last_name = @textplaceholder,
+    phone = @textplaceholder,
+    birthday = NULL,
+    wedding_anniversary = NULL,
+    location = @textplaceholder,
+    gender = NULL
+    where user_id = @UID;
+  update_placeholder_in_minted_order: |
+    update minted_order
+    set
+    cc_name = @textplaceholder,
+    gift_message = @textplaceholder,
+    special_instructions = NULL,
+    calculated_country_code = '',
+    calculated_region = ''
+    where id in ({{mintedOrderIdList}});
+  update_placeholder_in_minted_order_line_item: |
+    update minted_order_line_item
+    set shipping_tracking_number = @textplaceholder
+    where minted_order_id in ({{mintedOrderIdList}});
+  find_thumbnail_url_in_minted_order_line_item: |
+    select updated_thumbnail_url from minted_order_line_item
+    where minted_order_id in ({{mintedOrderIdList}});
+  update_placeholder_in_price_adjustment_note: |
+    update price_adjustment_note pan
+    inner join minted_order mo
+    on mo.id = pan.order_id
+    set note = @textplaceholder
+    where mo.owner_id = @UID;
+  update_placeholder_in_payment_information: |
+    update payment_information
+    set payment_owner_name = @textplaceholder
+    where user_id = @UID;
+  update_placeholder_in_minted_address: |
+    update minted_address
+    set
+    first_name = @textplaceholder,
+    last_name = @textplaceholder,
+    phone = @textplaceholder,
+    zipcode = NULL,
+    address_name = @textplaceholder,
+    address1 = @textplaceholder,
+    address2 = @textplaceholder,
+    city = @textplaceholder,
+    country = NULL,
+    region = @textplaceholder,
+    state = NULL
+    where user_id = @UID;
+  update_placeholder_in_di_invitation: |
+    update di_invitation
+    set
+    name = @textplaceholder,
+    email = @textplaceholder,
+    note = @textplaceholder
+    where id in ({{diInvitationIdList}});
+  delete_di_email_as_guest: |
+    delete from di_email
+    where id in ({{diEmailIdList}});
+  delete_job_for_job_id_in_jobs: |
+    delete from job
+    where id in ({{jobIdList}});
+  delete_job_for_job_id_in_di_jobs: |
+    delete from job
+    where id in ({{diJobIdList}});
+  validate_friend_email_placeholder: |
+    select * from friend_email
+    where id in ({{friendEmailIdList}})
+    and display_name = @textplaceholder
+    and email = @emailplaceholder
+    and name = @textplaceholder;
+  validate_users_placeholder: |
+    select * from users
+    where uid = @UID
+    and name = @textplaceholder
+    and init = @textplaceholder
+    and mail = @emailplaceholder
+    and pass = @textplaceholder;
+  validate_minted_account_placeholder: |
+    select * from minted_account
+    where user_id = @UID
+    and first_name = @textplaceholder
+    and last_name = @textplaceholder
+    and phone = @textplaceholder
+    and birthday IS NULL
+    and wedding_anniversary IS NULL
+    and location = @textplaceholder
+    and gender IS NULL;
+  valdiate_minted_order_placeholder: |
+    select * from minted_order
+    where id in ({{mintedOrderIdList}})
+    and cc_name = @textplaceholder
+    and gift_message = @textplaceholder
+    and special_instructions IS NULL
+    and calculated_country_code = ''
+    and calculated_region = '';
+  validate_minted_order_line_item_placeholder: |
+    select * from minted_order_line_item
+    where minted_order_id in ({{mintedOrderIdList}})
+    and shipping_tracking_number = @textplaceholder;
+  validate_price_adjustment_note_placeholder: |
+    select * from price_adjustment_note pan
+    inner join minted_order mo
+    on mo.id = pan.order_id
+    where mo.owner_id = @UID
+    and note = @textplaceholder;
+  validate_payment_information_placeholder: |
+    select * from payment_information
+    where user_id = @UID
+    and payment_owner_name = @textplaceholder;
+  validate_minted_address_placeholder: |
+    select * from minted_address
+    where user_id = @UID
+    and first_name = @textplaceholder
+    and last_name = @textplaceholder
+    and phone = @textplaceholder
+    and zipcode IS NULL
+    and address_name = @textplaceholder
+    and address1 = @textplaceholder
+    and address2 = @textplaceholder
+    and city = @textplaceholder
+    and country IS NULL
+    and region = @textplaceholder
+    and state IS NULL;
+  validate_di_email_as_guest_deletion: |
+    select * from di_email
+    where id in ({{diEmailIdList}});
+  validate_di_invitation_placeholder: |
+    select * from di_invitation
+    where id in ({{diInvitationIdList}});
