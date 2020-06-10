@@ -12,6 +12,9 @@ const variableFormStyles = css`
   grid-auto-flow: column;
   grid-template-rows: repeat(3, auto);
   height: ${rem(100)};
+  max-width: 60%;
+  overflow: hidden;
+  overflow-x: auto;
 `;
 
 const { selectAll: selectVariableArray } = variableAdapter.getSelectors(
