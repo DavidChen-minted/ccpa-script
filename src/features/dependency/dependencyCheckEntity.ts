@@ -8,8 +8,8 @@ export interface Dependency {
 
 export interface DependencyCheck {
   stepId: string;
-  dependency: Dependency;
-  dependencyArray?: Dependency[];
+  dependency: Dependency[];
+  dependencyCheckList?: Dependency[];
 }
 
 export type DependencyCheckEntityState = EntityState<DependencyCheck>;

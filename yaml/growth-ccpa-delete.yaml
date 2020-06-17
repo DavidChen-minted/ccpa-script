@@ -146,9 +146,9 @@ steps:
   - id: minted_order_digital
     check:
       dependency:
-        stepId: minted_order_complete_within_3_months
-        choice: yes
-        type: check
+        - stepId: minted_order_complete_within_3_months
+          choice: yes
+          type: check
       description: >
         check if the minted_order_line_item is digital
       choices:
@@ -286,9 +286,9 @@ steps:
         snippets:
           - update_placeholder_in_minted_address
       dependency:
-        stepId: minted_order_incomplete
-        choice: no
-        type: check
+        - stepId: minted_order_incomplete
+          choice: no
+          type: check
     validation:
       description: >
         create sql to verify "deletion" in minted_address

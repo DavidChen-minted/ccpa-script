@@ -23,7 +23,7 @@ export interface StepToImport {
     db: string;
     snippets: string[];
   };
-  dependency?: Dependency;
+  dependency?: Dependency[];
 }
 
 export interface StepsToImport {
@@ -59,11 +59,15 @@ const instanceOfStepToImport = (object: any): object is StepToImport => {
   ) {
     return false;
   }
-  if (
-    object.dependency !== undefined &&
-    !instanceOfDependency(object.dependency)
-  ) {
-    return false;
+  if (object.dependency !== undefined) {
+    if (!Array.isArray(object.dependency)) {
+      return false;
+    }
+    for (let i = 0; i < object.dependency.length; i += 1) {
+      if (!instanceOfDependency(object.dependency[i])) {
+        return false;
+      }
+    }
   }
   if (object.choices !== undefined) {
     if (!Array.isArray(object.choices)) {
