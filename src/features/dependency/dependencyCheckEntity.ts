@@ -1,4 +1,5 @@
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
+import isEqual from 'lodash/isEqual';
 
 export interface Dependency {
   stepId: string;
@@ -26,6 +27,11 @@ export const instanceOfDependency = (object: any): object is Dependency => {
   }
   return true;
 };
+
+export const isIncludedInDependencyArray = (
+  dependency: Dependency,
+  array: Dependency[]
+) => array.some((node) => isEqual(node, dependency));
 
 const dependencyCheckAdapter = createEntityAdapter<DependencyCheck>({
   selectId: (dependencyCheck) => dependencyCheck.stepId,

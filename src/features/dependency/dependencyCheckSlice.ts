@@ -4,6 +4,7 @@ import dependencyCheckAdapter, {
   Dependency,
   DependencyCheck,
   DependencyCheckEntityState,
+  isIncludedInDependencyArray,
 } from './dependencyCheckEntity';
 import StepNodeRecord from './StepNodeRecord';
 import DependencyQueue from './DependencyQueue';
@@ -151,13 +152,20 @@ const dependencyCheckSlice = createSlice({
                     // without duplicated nodes
                     // eslint-disable-next-line no-unused-expressions
                     stepToReplace.dependencyCheckList?.forEach((node) => {
-                      if (!dependencyCheckList.includes(node)) {
+                      if (
+                        !isIncludedInDependencyArray(node, dependencyCheckList)
+                      ) {
                         dependencyCheckList.splice(i, 0, node);
                       }
                     });
 
                     // insert the current nodeToReplace again if not exists
-                    if (!dependencyCheckList.includes(nodeToReplace)) {
+                    if (
+                      !isIncludedInDependencyArray(
+                        nodeToReplace,
+                        dependencyCheckList
+                      )
+                    ) {
                       dependencyCheckList.splice(i, 0, nodeToReplace);
                     }
                   }

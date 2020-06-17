@@ -109,6 +109,103 @@ describe('dependencyCheckReducer', () => {
     },
   };
 
+  const mockState3: DependencyCheckState = {
+    dependencyChecks: {
+      check: {
+        ids: ['A', 'B', 'C'],
+        entities: {
+          A: {
+            stepId: 'A',
+            dependency: [
+              {
+                stepId: 'B',
+                choice: 'yes',
+              },
+              {
+                stepId: 'B',
+                type: 'delete',
+              },
+            ],
+            dependencyCheckList: [
+              {
+                stepId: 'C',
+                choice: 'no',
+                type: 'delete',
+              },
+            ],
+          },
+          B: {
+            stepId: 'B',
+            dependency: [
+              {
+                stepId: 'D',
+                type: 'check',
+              },
+            ],
+          },
+          C: {
+            stepId: 'C',
+            dependency: [
+              {
+                stepId: 'A',
+                type: 'delete',
+              },
+              {
+                stepId: 'B',
+                type: 'delete',
+              },
+              {
+                stepId: 'C',
+                type: 'delete',
+              },
+            ],
+          },
+        },
+      },
+      delete: {
+        ids: ['A', 'B', 'D'],
+        entities: {
+          A: {
+            stepId: 'A',
+            dependency: [
+              {
+                stepId: 'A',
+              },
+            ],
+            dependencyCheckList: [
+              {
+                stepId: 'A',
+                type: 'check',
+              },
+              {
+                stepId: 'D',
+                type: 'check',
+              },
+            ],
+          },
+          B: {
+            stepId: 'B',
+            dependency: [
+              {
+                stepId: 'D',
+                type: 'check',
+              },
+            ],
+          },
+          D: {
+            stepId: 'D',
+            dependency: [
+              {
+                stepId: 'A',
+                type: 'delete',
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+
   it('should correctly resolve all dependency', () => {
     const expectedState = {
       dependencyChecks: {
@@ -265,5 +362,189 @@ describe('dependencyCheckReducer', () => {
     expect(reducer.bind(null, mockState2, action)).toThrow(
       /circular dependency/
     );
+  });
+
+  it('should correctly resolve and dedupe all dependency', () => {
+    const resultState = reducer(mockState3, action);
+
+    const expectedState = {
+      dependencyChecks: {
+        check: {
+          ids: ['A', 'B', 'C'],
+          entities: {
+            A: {
+              stepId: 'A',
+              dependency: [
+                {
+                  stepId: 'B',
+                  choice: 'yes',
+                  type: 'check',
+                },
+                {
+                  stepId: 'B',
+                  type: 'delete',
+                },
+              ],
+              dependencyCheckList: [
+                {
+                  stepId: 'B',
+                  choice: 'yes',
+                  type: 'check',
+                },
+                {
+                  stepId: 'B',
+                  type: 'delete',
+                },
+                {
+                  stepId: 'D',
+                  type: 'check',
+                },
+              ],
+            },
+            B: {
+              stepId: 'B',
+              dependency: [
+                {
+                  stepId: 'D',
+                  type: 'check',
+                },
+              ],
+              dependencyCheckList: [
+                {
+                  stepId: 'D',
+                  type: 'check',
+                },
+              ],
+            },
+            C: {
+              stepId: 'C',
+              dependency: [
+                {
+                  stepId: 'A',
+                  type: 'delete',
+                },
+                {
+                  stepId: 'B',
+                  type: 'delete',
+                },
+                {
+                  stepId: 'C',
+                  type: 'delete',
+                },
+              ],
+              dependencyCheckList: [
+                {
+                  stepId: 'A',
+                  type: 'delete',
+                },
+                {
+                  stepId: 'B',
+                  choice: 'yes',
+                  type: 'check',
+                },
+                {
+                  stepId: 'A',
+                  type: 'check',
+                },
+                {
+                  stepId: 'B',
+                  type: 'delete',
+                },
+                {
+                  stepId: 'D',
+                  type: 'check',
+                },
+                {
+                  stepId: 'C',
+                  type: 'delete',
+                },
+              ],
+            },
+          },
+        },
+        delete: {
+          ids: ['A', 'B', 'D'],
+          entities: {
+            A: {
+              stepId: 'A',
+              dependency: [
+                {
+                  stepId: 'A',
+                  type: 'check',
+                },
+              ],
+              dependencyCheckList: [
+                {
+                  stepId: 'A',
+                  type: 'check',
+                },
+                {
+                  stepId: 'D',
+                  type: 'check',
+                },
+                {
+                  stepId: 'B',
+                  type: 'delete',
+                },
+                {
+                  stepId: 'B',
+                  choice: 'yes',
+                  type: 'check',
+                },
+              ],
+            },
+            B: {
+              stepId: 'B',
+              dependency: [
+                {
+                  stepId: 'D',
+                  type: 'check',
+                },
+              ],
+              dependencyCheckList: [
+                {
+                  stepId: 'D',
+                  type: 'check',
+                },
+              ],
+            },
+            D: {
+              stepId: 'D',
+              dependency: [
+                {
+                  stepId: 'A',
+                  type: 'delete',
+                },
+              ],
+              dependencyCheckList: [
+                {
+                  stepId: 'A',
+                  type: 'delete',
+                },
+                {
+                  stepId: 'B',
+                  choice: 'yes',
+                  type: 'check',
+                },
+                {
+                  stepId: 'B',
+                  type: 'delete',
+                },
+                {
+                  stepId: 'D',
+                  type: 'check',
+                },
+                {
+                  stepId: 'A',
+                  type: 'check',
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    expect(resultState).toEqual(expectedState);
   });
 });
