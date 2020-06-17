@@ -11,7 +11,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "help": "next export -h",
-    "export": "NODE_ENV=production npm run build && next export -o docs && touch docs/.nojekyll"
+    "export": "NODE_ENV=production npm run build && next export -o docs && touch docs/.nojekyll",
+    "count-lines": "git ls-files src | xargs wc -l"
   },
   "repository": {
     "type": "git",
