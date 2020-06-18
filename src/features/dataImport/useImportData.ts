@@ -63,7 +63,7 @@ const useImportData = (dataToImport?: DataToImport) => {
       }) || {};
 
     if (parsedSteps && parsedDatabaseScripts && parsedDependencyChecks) {
-      resolveAllDependency({
+      const resolvedDependencyChecks = resolveAllDependency({
         dependencyChecks: parsedDependencyChecks,
         types: scriptTypes,
       });
@@ -81,7 +81,7 @@ const useImportData = (dataToImport?: DataToImport) => {
       );
       dispatch(
         dependencyCheckReceived({
-          dependencyChecks: parsedDependencyChecks,
+          dependencyChecks: resolvedDependencyChecks,
         })
       );
       dispatch(choiceControlReceived(parsedChoiceControl));
