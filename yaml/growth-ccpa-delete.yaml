@@ -29,7 +29,6 @@ steps:
       script:
         db: drupal
         snippets:
-          - set_email_var
           - find_user_id
           - show_user_id
     delete:
@@ -89,6 +88,10 @@ steps:
     check:
       description: >
         check if the friend email id is in friend_address table in bidata DB
+      dependency:
+        - stepId: friend_email
+          type: check
+          choice: yes
       script:
         db: drupal
         snippets:
@@ -473,7 +476,7 @@ steps:
         db: jobs
         snippets:
           - set_email_like_var
-          - find_job_id_for_email_in_job
+          - find_job_id_list_for_email_in_jobs
     delete:
       description: >
         create sql to delete from jobs table
@@ -489,7 +492,7 @@ steps:
         db: di_jobs
         snippets:
           - set_email_like_var
-          - find_job_id_for_email_in_job
+          - find_job_id_list_for_email_in_di_jobs
     delete:
       description: >
         create sql to delete from DI jobs table
@@ -554,9 +557,9 @@ snippets:
   set_email_like_var: |
     set @email = "%{{email}}%";
   find_user_id: |
-    select uid into @UID from users where mail = @email;
+    select uid into @UID from users where mail like "{{email}}%";
   show_user_id: |
-    select @UID;
+    select @UID as userId;
   set_request_number_var: |
     set @requestnumber = "{{requestNumber}}";
   set_user_id_var: |
@@ -576,7 +579,7 @@ snippets:
   find_sessions: |
     select * from sessions where uid = @UID;
   find_friend_email_id_list: |
-    select group_concat(id) from friend_email where email = @email;
+    select group_concat(id) as friendEmailIdList from friend_email where email = @email;
   find_friend_address: |
     select * from friend_address 
     where id in (
@@ -589,15 +592,15 @@ snippets:
     select *
     from minted_order
     where owner_id = @UID
-    and is_placed = 1
-    and minted_state_diagram_state_id <> 150;
+      and is_placed = 1
+      and minted_state_diagram_state_id <> 150;
   find_minted_order_complete_within_3_months: |
     select *
     from minted_order
     where owner_id = @UID
-    and is_placed = 1
-    and minted_state_diagram_state_id = 150
-    and date_add(order_placement_date, interval 3 month) >= now();
+      and is_placed = 1
+      and minted_state_diagram_state_id = 150
+      and date_add(order_placement_date, interval 3 month) >= now();
   find_minted_order_digital: |
     select moli.*
     from minted_order mo
@@ -605,28 +608,35 @@ snippets:
     on mo.id = moli.minted_order_id
     and moli.line_item_type = 'product'
     where owner_id = @UID
-    and is_placed = 1
-    and minted_state_diagram_state_id = 150
-    and date_add(order_placement_date, interval 3 month) >= now();
+      and is_placed = 1
+      and minted_state_diagram_state_id = 150
+      and date_add(order_placement_date, interval 3 month) >= now();
   find_minted_order_complete_3_months_before: |
-    select group_concat(id)
+    select group_concat(id) as mintedOrderIdList
     from minted_order
     where owner_id = @UID
-    and 
-    ((is_placed = 1
-    and minted_state_diagram_state_id = 150
-    and date_add(order_placement_date, interval 3 month) < now())
-    or (is_placed = 0));
+      and (
+        (
+          is_placed = 1
+          and minted_state_diagram_state_id = 150
+          and date_add(order_placement_date, interval 3 month) < now()
+        )
+        or (is_placed = 0)
+      );
   find_minted_order_line_item: |
     select * from minted_order_line_item moli
     inner join minted_order mo
     on moli.minted_order_id = mo.id
     where owner_id = @UID
-    and
-    ((is_placed = 1
-    and minted_state_diagram_state_id = 150
-    and date_add(order_placement_date, interval 3 month) < now())
-    or (is_placed = 0));
+      and
+      (
+        (
+          is_placed = 1
+          and minted_state_diagram_state_id = 150
+          and date_add(order_placement_date, interval 3 month) < now()
+        )
+        or (is_placed = 0)
+      );
   find_price_adjustment_note: |
     select * from minted_order mo
     inner join price_adjustment_note pan
@@ -649,7 +659,7 @@ snippets:
   show_di_unsubscribe_guest_id: |
     select @diunsubscribeguestid;
   find_di_invitation_id_list: |
-    select group_concat(id)
+    select group_concat(id) as diInvitationIdList
     from di_invitation where email = @email;
 
   find_di_event_poll_question_response: |
@@ -665,7 +675,7 @@ snippets:
     from di_email
     where email = @email;
   find_di_event_id_list: |
-    select group_concat(id) from di_event 
+    select group_concat(id) as diEventIdList from di_event 
     where creator_user_id = @UID;
   find_di_email_host: |
     select *
@@ -731,37 +741,40 @@ snippets:
     inner join di_media dm
     on di.rendered_email_composite_media_id = dm.id
     where di_event_id in ({{diEventIdList}}));
-  find_job_id_for_email_in_job: |
-    select group_concat(id) from job 
+  find_job_id_list_for_email_in_jobs: |
+    select group_concat(id) as jobIdList from job 
+    where arguments like @email;
+  find_job_id_list_for_email_in_di_jobs: |
+    select group_concat(id) as diJobIdList from job 
     where arguments like @email;
   delete_sessions: |
-    delete from sessions where uid = @UID;
+    delete from sessions where uid = {{userId}};
   update_placeholder_in_friend_email: |
     update friend_email
     set
-    display_name = @textplaceholder,
-    email = @emailplaceholder,
-    name = @textplaceholder
+      display_name = @textplaceholder,
+      email = @emailplaceholder,
+      name = @textplaceholder
     where id in ({{friendEmailIdList}});
   update_placeholder_in_minted_account: |
     update minted_account
-    set 
-    first_name = @textplaceholder,
-    last_name = @textplaceholder,
-    phone = @textplaceholder,
-    birthday = NULL,
-    wedding_anniversary = NULL,
-    location = @textplaceholder,
-    gender = NULL
+    set
+      first_name = @textplaceholder,
+      last_name = @textplaceholder,
+      phone = @textplaceholder,
+      birthday = NULL,
+      wedding_anniversary = NULL,
+      location = @textplaceholder,
+      gender = NULL
     where user_id = @UID;
   update_placeholder_in_minted_order: |
     update minted_order
     set
-    cc_name = @textplaceholder,
-    gift_message = @textplaceholder,
-    special_instructions = NULL,
-    calculated_country_code = '',
-    calculated_region = ''
+      cc_name = @textplaceholder,
+      gift_message = @textplaceholder,
+      special_instructions = NULL,
+      calculated_country_code = '',
+      calculated_region = ''
     where id in ({{mintedOrderIdList}});
   update_placeholder_in_minted_order_line_item: |
     update minted_order_line_item
@@ -783,24 +796,24 @@ snippets:
   update_placeholder_in_minted_address: |
     update minted_address
     set
-    first_name = @textplaceholder,
-    last_name = @textplaceholder,
-    phone = @textplaceholder,
-    zipcode = NULL,
-    address_name = @textplaceholder,
-    address1 = @textplaceholder,
-    address2 = @textplaceholder,
-    city = @textplaceholder,
-    country = NULL,
-    region = @textplaceholder,
-    state = NULL
+      first_name = @textplaceholder,
+      last_name = @textplaceholder,
+      phone = @textplaceholder,
+      zipcode = NULL,
+      address_name = @textplaceholder,
+      address1 = @textplaceholder,
+      address2 = @textplaceholder,
+      city = @textplaceholder,
+      country = NULL,
+      region = @textplaceholder,
+      state = NULL
     where user_id = @UID;
   update_placeholder_in_di_invitation: |
     update di_invitation
     set
-    name = @textplaceholder,
-    email = @textplaceholder,
-    note = @textplaceholder
+      name = @textplaceholder,
+      email = @textplaceholder,
+      note = @textplaceholder
     where id in ({{diInvitationIdList}});
   delete_di_email_as_guest: |
     delete from di_email
@@ -814,62 +827,62 @@ snippets:
   validate_friend_email_placeholder: |
     select * from friend_email
     where id in ({{friendEmailIdList}})
-    and display_name = @textplaceholder
-    and email = @emailplaceholder
-    and name = @textplaceholder;
+      and display_name = @textplaceholder
+      and email = @emailplaceholder
+      and name = @textplaceholder;
   validate_users_placeholder: |
     select * from users
     where uid = @UID
-    and name = @textplaceholder
-    and init = @textplaceholder
-    and mail = @emailplaceholder
-    and pass = @textplaceholder;
+      and name = @textplaceholder
+      and init = @textplaceholder
+      and mail = @emailplaceholder
+      and pass = @textplaceholder;
   validate_minted_account_placeholder: |
     select * from minted_account
     where user_id = @UID
-    and first_name = @textplaceholder
-    and last_name = @textplaceholder
-    and phone = @textplaceholder
-    and birthday IS NULL
-    and wedding_anniversary IS NULL
-    and location = @textplaceholder
-    and gender IS NULL;
+      and first_name = @textplaceholder
+      and last_name = @textplaceholder
+      and phone = @textplaceholder
+      and birthday IS NULL
+      and wedding_anniversary IS NULL
+      and location = @textplaceholder
+      and gender IS NULL;
   valdiate_minted_order_placeholder: |
     select * from minted_order
     where id in ({{mintedOrderIdList}})
-    and cc_name = @textplaceholder
-    and gift_message = @textplaceholder
-    and special_instructions IS NULL
-    and calculated_country_code = ''
-    and calculated_region = '';
+      and cc_name = @textplaceholder
+      and gift_message = @textplaceholder
+      and special_instructions IS NULL
+      and calculated_country_code = ''
+      and calculated_region = '';
   validate_minted_order_line_item_placeholder: |
     select * from minted_order_line_item
     where minted_order_id in ({{mintedOrderIdList}})
-    and shipping_tracking_number = @textplaceholder;
+      and shipping_tracking_number = @textplaceholder;
   validate_price_adjustment_note_placeholder: |
     select * from price_adjustment_note pan
     inner join minted_order mo
     on mo.id = pan.order_id
     where mo.owner_id = @UID
-    and note = @textplaceholder;
+      and note = @textplaceholder;
   validate_payment_information_placeholder: |
     select * from payment_information
     where user_id = @UID
-    and payment_owner_name = @textplaceholder;
+      and payment_owner_name = @textplaceholder;
   validate_minted_address_placeholder: |
     select * from minted_address
     where user_id = @UID
-    and first_name = @textplaceholder
-    and last_name = @textplaceholder
-    and phone = @textplaceholder
-    and zipcode IS NULL
-    and address_name = @textplaceholder
-    and address1 = @textplaceholder
-    and address2 = @textplaceholder
-    and city = @textplaceholder
-    and country IS NULL
-    and region = @textplaceholder
-    and state IS NULL;
+      and first_name = @textplaceholder
+      and last_name = @textplaceholder
+      and phone = @textplaceholder
+      and zipcode IS NULL
+      and address_name = @textplaceholder
+      and address1 = @textplaceholder
+      and address2 = @textplaceholder
+      and city = @textplaceholder
+      and country IS NULL
+      and region = @textplaceholder
+      and state IS NULL;
   validate_di_email_as_guest_deletion: |
     select * from di_email
     where id in ({{diEmailIdList}});
