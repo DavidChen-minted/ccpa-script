@@ -21,11 +21,9 @@ import { choiceControlReceived } from 'features/choiceControl/choiceControlSlice
 import { databaseScriptReceived } from 'features/databaseScript/databaseScriptSlice';
 import layoutScriptResult from 'features/scriptResult/layoutScriptResult';
 import { scriptResultReceived } from 'features/scriptResult/scriptResultSlice';
-import {
-  dependencyCheckReceived,
-  resolveAllDependency,
-} from 'features/dependency/dependencyCheckSlice';
+import { dependencyCheckReceived } from 'features/dependency/dependencyCheckSlice';
 import { getNextVisibleStepId } from 'features/step/getStepId';
+import { resolveAllDependency } from 'features/dependency/resolveDependency';
 import parseStepsToImport, { StepsToImport } from './parseStepsToImport';
 
 interface DataToImport {
@@ -65,6 +63,11 @@ const useImportData = (dataToImport?: DataToImport) => {
       }) || {};
 
     if (parsedSteps && parsedDatabaseScripts && parsedDependencyChecks) {
+      resolveAllDependency({
+        dependencyChecks: parsedDependencyChecks,
+        types: scriptTypes,
+      });
+
       dispatch(
         stepReceived({
           steps: parsedSteps,
@@ -82,7 +85,6 @@ const useImportData = (dataToImport?: DataToImport) => {
         })
       );
       dispatch(choiceControlReceived(parsedChoiceControl));
-      dispatch(resolveAllDependency(scriptTypes));
     }
   }, [dataToImport]);
 };
