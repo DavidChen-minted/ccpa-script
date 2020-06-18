@@ -28,7 +28,7 @@ const unexpandedContentTableStyles = css`
   margin-right: ${rem(10)};
 `;
 
-const contentTableWindowStyles = (height = 0, bottom = 20) => css`
+const contentTableWindowStyles = ({ height = 0, bottom = 20 }) => css`
   margin: ${rem(10)};
   margin-bottom: ${rem(bottom)};
   display: flex;
@@ -73,7 +73,7 @@ const ContentTable: FC = () => {
         </button>
       </div>
       <BreakLine />
-      <div css={contentTableWindowStyles(height)} ref={measureRef}>
+      <div css={contentTableWindowStyles({ height })} ref={measureRef}>
         {stepArray.map(({ id, visible, order }) => {
           return (
             <ContentTableItem

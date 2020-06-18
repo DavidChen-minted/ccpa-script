@@ -6,7 +6,7 @@ interface Props {
   id: string;
   value?: string;
   description?: string;
-  onChange?: (id: string, value: string) => void;
+  onChange?: (variable: { id: string; value: string }) => void;
 }
 
 const variableInputStyles = css`
@@ -23,9 +23,9 @@ const VariableInput: FC<Props> = ({ id, value, description, onChange }) => {
   const placeholder = description || id || '';
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    const { value: newValue } = e.target;
     if (onChange) {
-      onChange(id, newValue);
+      onChange({ id, value: newValue });
     }
   };
   return (

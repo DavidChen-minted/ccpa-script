@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { useSelector, shallowEqual } from 'react-redux';
 import { useCallback } from 'react';
 import { Dictionary } from '@reduxjs/toolkit';
@@ -16,7 +17,7 @@ const useSelectAllScripts = () => {
             selectEntities,
           } = databaseScriptAdapter.getSelectors(
             (s: GlobalDatabaseScriptState) =>
-              selectDatabaseScriptByScriptType(s, type)
+              selectDatabaseScriptByScriptType({ state: s, type })
           );
           obj[type] = selectEntities(state);
           return obj;

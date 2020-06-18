@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { ScriptSnippetsToImport } from 'features/scriptSnippet/scriptSnippetSlice';
 
 export const combineSnippetsAtImport = ({

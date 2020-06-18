@@ -35,7 +35,7 @@ const ChoiceButtons: FC = () => {
 
   const dispatch = useDispatch();
   const handleClick = useCallback(
-    (choiceId: string, notes?: string) => {
+    ({ id: choiceId, notes }: { id: string; notes?: string }) => {
       if (stepId) {
         dispatch(updateSelectedChoiceId({ stepId, choiceId }));
         if (notes) {

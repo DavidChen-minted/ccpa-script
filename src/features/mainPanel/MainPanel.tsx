@@ -6,7 +6,7 @@ import rem from 'utils/style/rem';
 import useScreenHeight from 'utils/customHook/useScreenHeight';
 import MiddlePanel from 'features/middlePanel/MiddlePanel';
 
-const mainPanelStyles = (height = 0, marginBottom = 20) => css`
+const mainPanelStyles = ({ height = 0, marginBottom = 20 }) => css`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -19,7 +19,7 @@ const MainPanel: FC = () => {
   const { height, measureRef } = useScreenHeight();
 
   return (
-    <div css={mainPanelStyles(height)} ref={measureRef}>
+    <div css={mainPanelStyles({ height })} ref={measureRef}>
       <ContentTable />
       <MiddlePanel />
       <ScriptResult />

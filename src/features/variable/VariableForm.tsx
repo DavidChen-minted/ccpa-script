@@ -25,7 +25,7 @@ const VariableForm: FC = () => {
   const variableArray = useSelector(selectVariableArray);
   const dispatch = useDispatch();
   const handleChange = useCallback(
-    (id: string, value: string) => {
+    ({ id, value }: { id: string; value: string }) => {
       dispatch(updateVariableValue({ id, value }));
     },
     [dispatch, updateVariableValue]

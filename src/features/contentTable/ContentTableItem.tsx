@@ -9,7 +9,7 @@ interface Props extends Pick<Step, 'id' | 'order' | 'visible'> {
   onClick?: (id: string) => void;
 }
 
-const contentTableItemStyles = (visible = false, selected = false) => css`
+const contentTableItemStyles = ({ visible = false, selected = false }) => css`
   font-size: ${rem(18)};
   ${selected && 'font-weight: bold; font-style: italic;'};
   margin: ${rem(5)};
@@ -44,13 +44,13 @@ const ContentTableItem: FC<Props> = ({
   return visible ? (
     <button
       type="button"
-      css={contentTableItemStyles(visible, selected)}
+      css={contentTableItemStyles({ visible, selected })}
       onClick={handleClick}
     >
       {content}
     </button>
   ) : (
-    <p css={contentTableItemStyles(visible, selected)}>{content}</p>
+    <p css={contentTableItemStyles({ visible, selected })}>{content}</p>
   );
 };
 

@@ -13,7 +13,7 @@ interface Props {
   onReplaceClick?: (script: string) => string;
 }
 
-const gridPositionStyles = (row = 1, col = 1) => css`
+const gridPositionStyles = ({ row = 1, col = 1 }) => css`
   grid-row: ${row};
   grid-column: ${col};
 `;
@@ -38,14 +38,14 @@ const ScriptDisplayPerType: FC<Props> = ({
 }) => {
   return (
     <>
-      <div css={[scriptTypeStyles, gridPositionStyles(1, col)]}>
+      <div css={[scriptTypeStyles, gridPositionStyles({ row: 1, col })]}>
         {scriptType ? `${scriptType}:` : ''}
       </div>
-      <div css={[scriptDescriptionStyles, gridPositionStyles(2, col)]}>
+      <div css={[scriptDescriptionStyles, gridPositionStyles({ row: 2, col })]}>
         {description}
       </div>
       <ScriptInput
-        styles={gridPositionStyles(3, col)}
+        styles={gridPositionStyles({ row: 3, col })}
         script={script}
         db={db}
         onChangeClick={onChangeClick}
