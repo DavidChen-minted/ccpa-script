@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Dependency } from './types';
 import dependencyCheckAdapter, {
-  Dependency,
   DependencyCheckEntityState,
 } from './dependencyCheckEntity';
 import { resolveAllDependency as resolveAllDependencyForState } from './resolveDependency';
@@ -13,8 +13,17 @@ export interface DependencyChecksState {
   [key: string]: DependencyCheckEntityState;
 }
 
+export interface InvertDependencyChecksState {
+  [key: string]: {
+    [key: string]: {
+      dependencyCheckList: Dependency[];
+    };
+  };
+}
+
 export interface DependencyCheckState {
   dependencyChecks: DependencyChecksState;
+  invertDependencyChecks: InvertDependencyChecksState;
 }
 
 const dependencyCheckSlice = createSlice({
@@ -59,12 +68,16 @@ const dependencyCheckSlice = createSlice({
       }
     },
     resolveAllDependency: (state, action: PayloadAction<string[]>) => {
-      const dependencyChecks = resolveAllDependencyForState({
+      const {
+        dependencyChecks,
+        invertDependencyChecks,
+      } = resolveAllDependencyForState({
         dependencyChecks: state.dependencyChecks,
         types: action.payload,
       });
-      if (dependencyChecks) {
+      if (dependencyChecks && invertDependencyChecks) {
         state.dependencyChecks = dependencyChecks;
+        state.invertDependencyChecks = invertDependencyChecks;
       }
       return state;
     },

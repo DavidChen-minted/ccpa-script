@@ -79,11 +79,7 @@ const useImportData = (dataToImport?: DataToImport) => {
           scripts: parsedDatabaseScripts,
         })
       );
-      dispatch(
-        dependencyCheckReceived({
-          dependencyChecks: resolvedDependencyChecks,
-        })
-      );
+      dispatch(dependencyCheckReceived(resolvedDependencyChecks));
       dispatch(choiceControlReceived(parsedChoiceControl));
     }
   }, [dataToImport]);

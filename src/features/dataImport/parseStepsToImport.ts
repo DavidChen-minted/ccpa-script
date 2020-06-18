@@ -1,8 +1,10 @@
 /* eslint-disable no-param-reassign */
-import dependencyCheckAdapter, {
+import {
+  RawDependency,
+  instanceOfRawDependency,
   Dependency,
-  instanceOfDependency,
-} from 'features/dependency/dependencyCheckEntity';
+} from 'features/dependency/types';
+import dependencyCheckAdapter from 'features/dependency/dependencyCheckEntity';
 import choiceControlAdapter, {
   Choice,
   Choices,
@@ -24,7 +26,7 @@ export interface StepToImport {
     db: string;
     snippets: string[];
   };
-  dependency?: Dependency[];
+  dependency?: RawDependency[];
 }
 
 export interface StepsToImport {
@@ -65,7 +67,7 @@ const instanceOfStepToImport = (object: any): object is StepToImport => {
       return false;
     }
     for (let i = 0; i < object.dependency.length; i += 1) {
-      if (!instanceOfDependency(object.dependency[i])) {
+      if (!instanceOfRawDependency(object.dependency[i])) {
         return false;
       }
     }
@@ -161,11 +163,17 @@ const parseStepsToImport = ({
         );
       }
       if (stepToImport.dependency) {
+        const dependency = stepToImport.dependency.map((node) => {
+          if (!node.type) {
+            [node.type] = types;
+          }
+          return node as Dependency;
+        });
         parsedDependencyChecks[scriptType] = dependencyCheckAdapter.addOne(
           parsedDependencyChecks[scriptType],
           {
             stepId: id,
-            dependency: stepToImport.dependency,
+            dependency,
           }
         );
       }

@@ -1,15 +1,36 @@
 /* eslint-disable no-param-reassign */
 import { createNextState as produce } from '@reduxjs/toolkit';
-import { DependencyChecksState } from './dependencyCheckSlice';
+import {
+  DependencyChecksState,
+  InvertDependencyChecksState,
+} from './dependencyCheckSlice';
 import StepNodeRecord from './StepNodeRecord';
 import DependencyQueue from './DependencyQueue';
-import { Dependency } from './dependencyCheckEntity';
+import { Dependency, StepNode } from './types';
 import isIncludedInDependencyArray from './isIncludedInDependencyArray';
 
 interface ResolveAllDependencyArgs {
   dependencyChecks: DependencyChecksState;
   types: string[];
+  invertDependencyChecks?: InvertDependencyChecksState;
 }
+
+const initiateInvertDependency = ({
+  invertDependencyChecks,
+  stepId,
+  type,
+}: {
+  invertDependencyChecks: InvertDependencyChecksState;
+  stepId: string;
+  type: string;
+}) => {
+  if (!invertDependencyChecks[type]) {
+    invertDependencyChecks[type] = {};
+  }
+  if (!invertDependencyChecks[type][stepId]) {
+    invertDependencyChecks[type][stepId] = { dependencyCheckList: [] };
+  }
+};
 
 const addNodeToQueueFactory = ({
   queue,
@@ -36,27 +57,80 @@ const addNodeToQueueFactory = ({
   }
 };
 
-const insertNodeIntoDependencyArrayFactory = ({
+const insertNodeIntoInvertDependencyChecks = ({
+  node,
+  currentNode,
+  invertDependencyChecks,
+}: {
+  node: Dependency;
+  currentNode: StepNode;
+  invertDependencyChecks: InvertDependencyChecksState;
+}) => {
+  // construct invert dependency node
+  const invertDependency: Dependency = {
+    stepId: currentNode.stepId,
+    type: currentNode.scriptType,
+    choice: node.choice,
+  };
+  // initiate state for the node if not initiated
+  initiateInvertDependency({ invertDependencyChecks, ...node });
+
+  // insert the invert dependency node only if not existed
+  // in the node's invert dependency check list
+  const invertDependencyCheckList =
+    invertDependencyChecks[node.type][node.stepId].dependencyCheckList;
+  if (
+    !isIncludedInDependencyArray({
+      dependency: invertDependency,
+      array: invertDependencyCheckList,
+    })
+  ) {
+    invertDependencyCheckList.push(invertDependency);
+  }
+};
+
+const insertNodeIntoDependencyCheckListFactory = ({
   index,
-  dependencyArray,
+  dependencyCheckList,
+  currentNode,
+  invertDependencyChecks,
 }: {
   index: number;
-  dependencyArray: Dependency[];
+  dependencyCheckList: Dependency[];
+  currentNode: StepNode;
+  invertDependencyChecks: InvertDependencyChecksState;
 }) => (node: Dependency) => {
   // insert dependency node only if not existed
-  if (!isIncludedInDependencyArray(node, dependencyArray)) {
-    dependencyArray.splice(index, 0, node);
+  if (
+    !isIncludedInDependencyArray({
+      dependency: node,
+      array: dependencyCheckList,
+    })
+  ) {
+    dependencyCheckList.splice(index, 0, node);
   }
+  insertNodeIntoInvertDependencyChecks({
+    node,
+    currentNode,
+    invertDependencyChecks,
+  });
 };
 
 export const resolveAllDependency = ({
   dependencyChecks,
   types,
+  invertDependencyChecks = {},
 }: ResolveAllDependencyArgs) =>
-  produce(dependencyChecks, (draftDependencyChecks) => {
+  produce({ dependencyChecks, invertDependencyChecks }, (draft) => {
     if (!types.length) {
-      return draftDependencyChecks;
+      return draft;
     }
+
+    const {
+      dependencyChecks: draftDependencyChecks,
+      invertDependencyChecks: draftInvertDependencyChecks,
+    } = draft;
+
     const resolved = new StepNodeRecord();
     const seen = new StepNodeRecord();
 
@@ -122,21 +196,27 @@ export const resolveAllDependency = ({
                   // without duplicated nodes
                   // eslint-disable-next-line no-unused-expressions
                   stepToReplace.dependencyCheckList?.forEach(
-                    insertNodeIntoDependencyArrayFactory({
+                    insertNodeIntoDependencyCheckListFactory({
                       index: i,
-                      dependencyArray: dependencyCheckList,
+                      dependencyCheckList,
+                      currentNode: nodeToCheck,
+                      invertDependencyChecks: draftInvertDependencyChecks,
                     })
                   );
 
                   // insert the current nodeToReplace again if not exists
-                  if (
-                    !isIncludedInDependencyArray(
-                      nodeToReplace,
-                      dependencyCheckList
-                    )
-                  ) {
-                    dependencyCheckList.splice(i, 0, nodeToReplace);
-                  }
+                  insertNodeIntoDependencyCheckListFactory({
+                    index: i,
+                    dependencyCheckList,
+                    currentNode: nodeToCheck,
+                    invertDependencyChecks: draftInvertDependencyChecks,
+                  })(nodeToReplace);
+                } else {
+                  insertNodeIntoInvertDependencyChecks({
+                    node: dependencyCheckList[i],
+                    currentNode: nodeToCheck,
+                    invertDependencyChecks,
+                  });
                 }
               }
 
@@ -152,7 +232,7 @@ export const resolveAllDependency = ({
       });
     });
 
-    return draftDependencyChecks;
+    return draft;
   });
 
 export const resolveDependency = () => {};
