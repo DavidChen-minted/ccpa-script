@@ -4,6 +4,7 @@ import choiceControlAdapter, {
   ChoiceControl,
   ChoiceControlEntityState,
 } from './choiceControlEntity';
+import importToChoiceControlState from './importToChoiceControlState';
 
 export type ChoiceControlState = ChoiceControlEntityState;
 
@@ -11,11 +12,21 @@ const choiceControlSlice = createSlice({
   name: 'choiceControl',
   initialState: choiceControlAdapter.getInitialState(),
   reducers: {
-    importChoiceControl: (
+    choiceControlReceived: (
+      state,
+      action: PayloadAction<ChoiceControlState | undefined>
+    ) => {
+      if (!action.payload) {
+        return state;
+      }
+      return action.payload;
+    },
+    importRawChoiceControl: (
       state,
       action: PayloadAction<ChoiceControl[] | undefined>
     ) => {
-      choiceControlAdapter.setAll(state, action.payload || []);
+      const choiceControl = importToChoiceControlState(action.payload);
+      return choiceControl || state;
     },
     updateSelectedChoiceId: (
       state,
@@ -39,6 +50,7 @@ export interface GlobalChoiceControlState {
 }
 
 export const {
-  importChoiceControl,
+  choiceControlReceived,
+  importRawChoiceControl,
   updateSelectedChoiceId,
 } = choiceControlSlice.actions;

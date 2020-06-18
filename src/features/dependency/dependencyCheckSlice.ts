@@ -2,12 +2,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import dependencyCheckAdapter, {
   Dependency,
-  DependencyCheck,
   DependencyCheckEntityState,
-  isIncludedInDependencyArray,
 } from './dependencyCheckEntity';
 import StepNodeRecord from './StepNodeRecord';
 import DependencyQueue from './DependencyQueue';
+import isIncludedInDependencyArray from './isIncludedInDependencyArray';
+import importToDependencyChecksState, {
+  ImportToDependencyChecksStateArgs,
+} from './importToDependencyChecksState';
 
 export interface DependencyChecksState {
   [key: string]: DependencyCheckEntityState;
@@ -17,38 +19,29 @@ export interface DependencyCheckState {
   dependencyChecks: DependencyChecksState;
 }
 
-export interface ParsedDependencyChecks {
-  [key: string]: DependencyCheck[];
-}
-
-export interface ImportParsedDependencyChecksPayload {
-  dependencyChecks?: ParsedDependencyChecks | null;
-  types: string[];
-}
-
 const dependencyCheckSlice = createSlice({
   name: 'dependencyCheck',
   initialState: {
     dependencyChecks: {},
   } as DependencyCheckState,
   reducers: {
-    importParsedDependencyChecks: (
+    dependencyCheckReceived: (
       state,
-      action: PayloadAction<ImportParsedDependencyChecksPayload>
+      action: PayloadAction<DependencyCheckState | undefined>
     ) => {
-      if (!action.payload.dependencyChecks) {
+      if (!action.payload) {
         return state;
       }
-      const { dependencyChecks } = action.payload;
-      state.dependencyChecks = action.payload.types.reduce<
-        DependencyChecksState
-      >((obj, scriptType) => {
-        obj[scriptType] = dependencyCheckAdapter.setAll(
-          dependencyCheckAdapter.getInitialState(),
-          dependencyChecks[scriptType]
-        );
-        return obj;
-      }, {});
+      return action.payload;
+    },
+    importRawDependencyChecks: (
+      state,
+      action: PayloadAction<ImportToDependencyChecksStateArgs>
+    ) => {
+      const dependencyChecks = importToDependencyChecksState(action.payload);
+      if (dependencyChecks) {
+        state.dependencyChecks = dependencyChecks;
+      }
       return state;
     },
     updateDependencyCheckList: (
@@ -193,7 +186,8 @@ export interface GlobalDependencyCheckState {
 }
 
 export const {
-  importParsedDependencyChecks,
+  dependencyCheckReceived,
+  importRawDependencyChecks,
   updateDependencyCheckList,
   resolveAllDependency,
 } = dependencyCheckSlice.actions;

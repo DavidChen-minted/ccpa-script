@@ -31,8 +31,8 @@ export const instanceOfChoice = (object: any): object is Choice => {
   return true;
 };
 
-const stepAdapter = createEntityAdapter<ChoiceControl>({
+const choiceControlAdapter = createEntityAdapter<ChoiceControl>({
   selectId: (choiceControl) => choiceControl.stepId,
 });
 
-export default stepAdapter;
+export default choiceControlAdapter;

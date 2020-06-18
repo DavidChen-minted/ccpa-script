@@ -1,9 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import databaseScriptAdapter, {
-  DatabaseScript,
   databaseScriptEntityState,
 } from './databaseScriptEntity';
+import importToDatabaseScriptsState, {
+  ImportToDatabaseScriptsStateArgs,
+} from './importToDatabaseScriptsState';
 
 export interface DatabaseScriptsState {
   [key: string]: databaseScriptEntityState;
@@ -13,39 +15,29 @@ export interface DatabaseScriptState {
   scripts: DatabaseScriptsState;
 }
 
-export interface ParsedDatabaseScripts {
-  [key: string]: DatabaseScript[];
-}
-
-export interface ImportParsedDatabaseScriptsPayload {
-  scripts?: ParsedDatabaseScripts | null;
-  types: string[];
-}
-
 const databaseScriptSlice = createSlice({
   name: 'databaseScript',
   initialState: {
     scripts: {},
   } as DatabaseScriptState,
   reducers: {
-    importParsedDatabaseScripts: (
+    databaseScriptReceived: (
       state,
-      action: PayloadAction<ImportParsedDatabaseScriptsPayload>
+      action: PayloadAction<DatabaseScriptState | undefined>
     ) => {
-      if (!action.payload.scripts) {
+      if (!action.payload) {
         return state;
       }
-      const { scripts } = action.payload;
-      state.scripts = action.payload.types.reduce<DatabaseScriptsState>(
-        (obj, scriptType) => {
-          obj[scriptType] = databaseScriptAdapter.setAll(
-            databaseScriptAdapter.getInitialState(),
-            scripts[scriptType]
-          );
-          return obj;
-        },
-        {}
-      );
+      return action.payload;
+    },
+    importRawDatabaseScripts: (
+      state,
+      action: PayloadAction<ImportToDatabaseScriptsStateArgs>
+    ) => {
+      const scripts = importToDatabaseScriptsState(action.payload);
+      if (scripts) {
+        state.scripts = scripts;
+      }
       return state;
     },
     updateScript: (
@@ -74,6 +66,7 @@ export interface GlobalDatabaseScriptState {
 }
 
 export const {
-  importParsedDatabaseScripts,
+  databaseScriptReceived,
+  importRawDatabaseScripts,
   updateScript,
 } = databaseScriptSlice.actions;

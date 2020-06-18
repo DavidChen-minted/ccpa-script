@@ -1,7 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import stepAdapter, { Step, StepEntityState } from './stepEntity';
+import { StepEntityState } from './stepEntity';
 import { getNextVisibleStepId } from './getStepId';
+import importToStepsState, {
+  ImportToStepsStateArgs,
+} from './importToStepsState';
 
 export interface StepsState {
   [key: string]: StepEntityState;
@@ -12,39 +15,23 @@ export interface StepState {
   currentStepId?: string;
 }
 
-export interface ParsedSteps {
-  [key: string]: Step[];
-}
-
-export interface ImportParsedStepsPayload {
-  steps?: ParsedSteps | null;
-  types: string[];
-}
-
 const stepSlice = createSlice({
   name: 'step',
   initialState: {
     steps: {},
   } as StepState,
   reducers: {
-    importParsedSteps: (
-      state,
-      action: PayloadAction<ImportParsedStepsPayload>
-    ) => {
-      if (!action.payload.steps) {
+    stepReceived: (state, action: PayloadAction<StepState | undefined>) => {
+      if (!action.payload) {
         return state;
       }
-      const { steps } = action.payload;
-      state.steps = action.payload.types.reduce<StepsState>(
-        (obj, scriptType) => {
-          obj[scriptType] = stepAdapter.setAll(
-            stepAdapter.getInitialState(),
-            steps[scriptType]
-          );
-          return obj;
-        },
-        {}
-      );
+      return action.payload;
+    },
+    importRawSteps: (state, action: PayloadAction<ImportToStepsStateArgs>) => {
+      const steps = importToStepsState(action.payload);
+      if (steps) {
+        state.steps = steps;
+      }
       state.currentStepId = getNextVisibleStepId(
         state.steps[action.payload.types[0]]
       );
@@ -65,4 +52,8 @@ export interface GlobalStepState {
   step: StepState;
 }
 
-export const { importParsedSteps, changeCurrentStepId } = stepSlice.actions;
+export const {
+  stepReceived,
+  importRawSteps,
+  changeCurrentStepId,
+} = stepSlice.actions;

@@ -16,15 +16,16 @@ import {
   importScriptSnippets,
   ScriptSnippetsToImport,
 } from 'features/scriptSnippet/scriptSnippetSlice';
-import { importParsedSteps } from 'features/step/stepSlice';
-import { importChoiceControl } from 'features/choiceControl/choiceControlSlice';
-import { importParsedDatabaseScripts } from 'features/databaseScript/databaseScriptSlice';
+import { stepReceived } from 'features/step/stepSlice';
+import { choiceControlReceived } from 'features/choiceControl/choiceControlSlice';
+import { databaseScriptReceived } from 'features/databaseScript/databaseScriptSlice';
 import layoutScriptResult from 'features/scriptResult/layoutScriptResult';
 import { scriptResultReceived } from 'features/scriptResult/scriptResultSlice';
 import {
-  importParsedDependencyChecks,
+  dependencyCheckReceived,
   resolveAllDependency,
 } from 'features/dependency/dependencyCheckSlice';
+import { getNextVisibleStepId } from 'features/step/getStepId';
 import parseStepsToImport, { StepsToImport } from './parseStepsToImport';
 
 interface DataToImport {
@@ -53,7 +54,7 @@ const useImportData = (dataToImport?: DataToImport) => {
     dispatch(importScriptSnippets(dataToImport?.snippets));
     const {
       parsedSteps,
-      choiceControl,
+      parsedChoiceControl,
       parsedDatabaseScripts,
       parsedDependencyChecks,
     } =
@@ -62,21 +63,27 @@ const useImportData = (dataToImport?: DataToImport) => {
         types: scriptTypes,
         snippets: dataToImport?.snippets,
       }) || {};
-    dispatch(importParsedSteps({ steps: parsedSteps, types: scriptTypes }));
-    dispatch(importChoiceControl(choiceControl));
-    dispatch(
-      importParsedDatabaseScripts({
-        scripts: parsedDatabaseScripts,
-        types: scriptTypes,
-      })
-    );
-    dispatch(
-      importParsedDependencyChecks({
-        dependencyChecks: parsedDependencyChecks,
-        types: scriptTypes,
-      })
-    );
-    dispatch(resolveAllDependency(scriptTypes));
+
+    if (parsedSteps && parsedDatabaseScripts && parsedDependencyChecks) {
+      dispatch(
+        stepReceived({
+          steps: parsedSteps,
+          currentStepId: getNextVisibleStepId(parsedSteps[scriptTypes[0]]),
+        })
+      );
+      dispatch(
+        databaseScriptReceived({
+          scripts: parsedDatabaseScripts,
+        })
+      );
+      dispatch(
+        dependencyCheckReceived({
+          dependencyChecks: parsedDependencyChecks,
+        })
+      );
+      dispatch(choiceControlReceived(parsedChoiceControl));
+      dispatch(resolveAllDependency(scriptTypes));
+    }
   }, [dataToImport]);
 };
 

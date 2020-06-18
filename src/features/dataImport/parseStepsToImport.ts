@@ -1,20 +1,21 @@
 /* eslint-disable no-param-reassign */
-import {
+import dependencyCheckAdapter, {
   Dependency,
   instanceOfDependency,
 } from 'features/dependency/dependencyCheckEntity';
-import {
+import choiceControlAdapter, {
   Choice,
   Choices,
-  ChoiceControl,
   instanceOfChoice,
 } from 'features/choiceControl/choiceControlEntity';
-import { ParsedSteps } from 'features/step/stepSlice';
-import { ParsedDatabaseScripts } from 'features/databaseScript/databaseScriptSlice';
+import { StepsState } from 'features/step/stepSlice';
+import { DatabaseScriptsState } from 'features/databaseScript/databaseScriptSlice';
 import { ScriptSnippetsToImport } from 'features/scriptSnippet/scriptSnippetSlice';
 import { combineSnippetsAtImport } from 'features/databaseScript/generateScript';
 import removeNewlineAtEnd from 'utils/common/removeNewlineAtEnd';
-import { ParsedDependencyChecks } from 'features/dependency/dependencyCheckSlice';
+import { DependencyChecksState } from 'features/dependency/dependencyCheckSlice';
+import databaseScriptAdapter from 'features/databaseScript/databaseScriptEntity';
+import stepAdapter from 'features/step/stepEntity';
 
 export interface StepToImport {
   description?: string;
@@ -93,15 +94,19 @@ const parseStepsToImport = ({
   if (!(steps && Array.isArray(steps) && types && Array.isArray(types))) {
     return null;
   }
-  const parsedSteps: ParsedSteps = {};
-  const choiceControl: ChoiceControl[] = [];
-  const parsedDatabaseScripts: ParsedDatabaseScripts = {};
-  const parsedDependencyChecks: ParsedDependencyChecks = {};
+  const parsedSteps: StepsState = {};
+  let parsedChoiceControl = choiceControlAdapter.getInitialState();
+  const parsedDatabaseScripts: DatabaseScriptsState = {};
+  const parsedDependencyChecks: DependencyChecksState = {};
   types.forEach((scriptType, scriptIndex) => {
-    parsedSteps[scriptType] = parsedSteps[scriptType] || [];
-    parsedDatabaseScripts[scriptType] = parsedDatabaseScripts[scriptType] || [];
+    parsedSteps[scriptType] =
+      parsedSteps[scriptType] || stepAdapter.getInitialState();
+    parsedDatabaseScripts[scriptType] =
+      parsedDatabaseScripts[scriptType] ||
+      databaseScriptAdapter.getInitialState();
     parsedDependencyChecks[scriptType] =
-      parsedDependencyChecks[scriptType] || [];
+      parsedDependencyChecks[scriptType] ||
+      dependencyCheckAdapter.getInitialState();
     const isFirst = scriptIndex === 0;
     steps.forEach(({ id, visible: visibleInput, ...stepsByType }, index) => {
       const visible = !(visibleInput === false);
@@ -128,9 +133,12 @@ const parseStepsToImport = ({
             no: { id: 'no' },
           };
         }
-        choiceControl.push({ stepId: id, choices });
+        parsedChoiceControl = choiceControlAdapter.addOne(parsedChoiceControl, {
+          stepId: id,
+          choices,
+        });
       }
-      parsedSteps[scriptType].push({
+      parsedSteps[scriptType] = stepAdapter.addOne(parsedSteps[scriptType], {
         id,
         visible,
         scriptType,
@@ -140,26 +148,32 @@ const parseStepsToImport = ({
       if (stepToImport.script) {
         const { db, snippets } = stepToImport.script;
         const script = combineSnippetsAtImport({ snippets, snippetsObj });
-        parsedDatabaseScripts[scriptType].push({
-          stepId: id,
-          scriptType,
-          db,
-          description,
-          snippets,
-          script,
-        });
+        parsedDatabaseScripts[scriptType] = databaseScriptAdapter.addOne(
+          parsedDatabaseScripts[scriptType],
+          {
+            stepId: id,
+            scriptType,
+            db,
+            description,
+            snippets,
+            script,
+          }
+        );
       }
       if (stepToImport.dependency) {
-        parsedDependencyChecks[scriptType].push({
-          stepId: id,
-          dependency: stepToImport.dependency,
-        });
+        parsedDependencyChecks[scriptType] = dependencyCheckAdapter.addOne(
+          parsedDependencyChecks[scriptType],
+          {
+            stepId: id,
+            dependency: stepToImport.dependency,
+          }
+        );
       }
     });
   });
   return {
     parsedSteps,
-    choiceControl,
+    parsedChoiceControl,
     parsedDatabaseScripts,
     parsedDependencyChecks,
   };
