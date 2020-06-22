@@ -65,7 +65,6 @@ const useImportData = (dataToImport?: DataToImport) => {
     if (parsedSteps && parsedDatabaseScripts && parsedDependencyChecks) {
       const resolvedDependencyChecks = resolveAllDependency({
         dependencyChecks: parsedDependencyChecks,
-        types: scriptTypes,
       });
 
       dispatch(

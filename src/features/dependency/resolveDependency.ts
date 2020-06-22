@@ -11,7 +11,6 @@ import isIncludedInDependencyArray from './isIncludedInDependencyArray';
 
 interface ResolveAllDependencyArgs {
   dependencyChecks: DependencyChecksState;
-  types: string[];
   invertDependencyChecks?: InvertDependencyChecksState;
 }
 
@@ -32,15 +31,9 @@ const initiateInvertDependency = ({
   }
 };
 
-const addNodeToQueueFactory = ({
-  queue,
-  defaultType,
-}: {
-  queue: DependencyQueue;
-  defaultType: string;
-}) => (node: Dependency) => {
-  // add default dependency's scriptType if not existed
-  node.type = node.type || defaultType;
+const addNodeToQueueFactory = (queue: DependencyQueue) => (
+  node: Dependency
+) => {
   // construct nextNode
   const nextNode = {
     scriptType: node.type,
@@ -70,8 +63,10 @@ const insertNodeIntoInvertDependencyChecks = ({
   const invertDependency: Dependency = {
     stepId: currentNode.stepId,
     type: currentNode.scriptType,
-    choice: node.choice,
   };
+  if (node.choice) {
+    invertDependency.choice = node.choice;
+  }
   // initiate state for the node if not initiated
   initiateInvertDependency({ invertDependencyChecks, ...node });
 
@@ -118,14 +113,9 @@ const insertNodeIntoDependencyCheckListFactory = ({
 
 export const resolveAllDependency = ({
   dependencyChecks,
-  types,
   invertDependencyChecks = {},
 }: ResolveAllDependencyArgs) =>
   produce({ dependencyChecks, invertDependencyChecks }, (draft) => {
-    if (!types.length) {
-      return draft;
-    }
-
     const {
       dependencyChecks: draftDependencyChecks,
       invertDependencyChecks: draftInvertDependencyChecks,
@@ -144,10 +134,7 @@ export const resolveAllDependency = ({
 
         // declare function to add a node to queue
         // use first scriptType as default type
-        const addNodeToQueue = addNodeToQueueFactory({
-          queue,
-          defaultType: types[0],
-        });
+        const addNodeToQueue = addNodeToQueueFactory(queue);
 
         while (queue.length) {
           // make sure processing every node in queue
@@ -215,7 +202,7 @@ export const resolveAllDependency = ({
                   insertNodeIntoInvertDependencyChecks({
                     node: dependencyCheckList[i],
                     currentNode: nodeToCheck,
-                    invertDependencyChecks,
+                    invertDependencyChecks: draftInvertDependencyChecks,
                   });
                 }
               }

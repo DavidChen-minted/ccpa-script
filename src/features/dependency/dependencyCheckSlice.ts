@@ -30,6 +30,7 @@ const dependencyCheckSlice = createSlice({
   name: 'dependencyCheck',
   initialState: {
     dependencyChecks: {},
+    invertDependencyChecks: {},
   } as DependencyCheckState,
   reducers: {
     dependencyCheckReceived: (
@@ -67,13 +68,12 @@ const dependencyCheckSlice = createSlice({
         });
       }
     },
-    resolveAllDependency: (state, action: PayloadAction<string[]>) => {
+    resolveAllDependency: (state) => {
       const {
         dependencyChecks,
         invertDependencyChecks,
       } = resolveAllDependencyForState({
         dependencyChecks: state.dependencyChecks,
-        types: action.payload,
       });
       if (dependencyChecks && invertDependencyChecks) {
         state.dependencyChecks = dependencyChecks;
