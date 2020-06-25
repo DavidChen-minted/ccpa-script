@@ -1,6 +1,6 @@
 import { Dictionary } from '@reduxjs/toolkit';
 import { ChoiceControl } from 'features/choiceControl/choiceControlEntity';
-import { Dependency } from './dependencyCheckEntity';
+import { Dependency } from './types';
 
 const isDependencyFulfilled = (
   dependencyCheckList: Dependency[],
